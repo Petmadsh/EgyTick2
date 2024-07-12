@@ -5,15 +5,25 @@ import android.os.Bundle
 import android.text.TextUtils
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.example.egytick.R
 import com.example.egytick.databinding.ActivityLoginBinding
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.content.ContextCompat
+import com.google.android.gms.common.api.ApiException
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
+
+    companion object {
+        private const val RC_SIGN_IN = 9001
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +36,13 @@ class LoginActivity : AppCompatActivity() {
         // Initialize FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance()
 
+        // Configure Google Sign-In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
         // Set onClickListener for Register TextView
         binding.tvRegister.setOnClickListener {
             val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
@@ -37,6 +54,11 @@ class LoginActivity : AppCompatActivity() {
             if (validateLoginDetails()) {
                 loginUser()
             }
+        }
+
+        // Set onClickListener for Google Login Button
+        binding.btnLoginGoogle.setOnClickListener {
+            signInWithGoogle()
         }
     }
 
@@ -57,20 +79,15 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginUser() {
-        // Get the text from edit text and trim the space
-        val email: String = binding.etEmail.text.toString().trim { it <= ' ' }
-        val password: String = binding.etPassword.text.toString().trim { it <= ' ' }
+        val email = binding.etEmail.text.toString().trim { it <= ' ' }
+        val password = binding.etPassword.text.toString().trim { it <= ' ' }
 
-        // Log in using FirebaseAuth
         firebaseAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
-                // If the login is successful
                 if (task.isSuccessful) {
-                    // Firebase logged in user
                     val firebaseUser = firebaseAuth.currentUser
                     showErrorSnackBar("You are logged in successfully.", false)
 
-                    // Navigate to the main activity
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     intent.putExtra("user_id", firebaseUser?.uid)
@@ -78,8 +95,46 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 } else {
-                    // If the login is not successful then show an error message.
                     showErrorSnackBar(task.exception?.message.toString(), true)
+                }
+            }
+    }
+
+    private fun signInWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                showErrorSnackBar("Google sign in failed: ${e.message}", true)
+            }
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val firebaseUser = firebaseAuth.currentUser
+                    showErrorSnackBar("You are logged in successfully with Google.", false)
+
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    intent.putExtra("user_id", firebaseUser?.uid)
+                    intent.putExtra("email_id", firebaseUser?.email)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    showErrorSnackBar("Google sign in failed: ${task.exception?.message}", true)
                 }
             }
     }

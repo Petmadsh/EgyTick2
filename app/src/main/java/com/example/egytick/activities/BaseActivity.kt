@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.example.egytick.R
 
@@ -29,5 +30,14 @@ open class BaseActivity : AppCompatActivity() {
 
         snackBarView.setBackgroundColor(color)
         snackBar.show()
+    }
+    private fun replaceFragment(fragment : Fragment){
+
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frame_layout,fragment)
+        fragmentTransaction.commit()
+
+
     }
 }
