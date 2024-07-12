@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "468633162217",
+    "project_id": "visit-egypt-a2516",
+    "storage_bucket": "visit-egypt-a2516.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468633162217:android:d1beb18e8b63cd304fbb78",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "468633162217-m5gmslqm27otdpoau33cjs3ip2l6t73r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3FWFT_C2iGF-ri1rNnmTAYBiJlDqPo54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "468633162217-m5gmslqm27otdpoau33cjs3ip2l6t73r.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "468633162217-ur9ascnt6d6un45tetetmpur84craogq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.google.firebase.presents.egytick"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468633162217:android:0e0ee61f8efc51d84fbb78",
+        "android_client_info": {
+          "package_name": "com.example.egytick"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "468633162217-hvk2f1u336qf3hjej5f0ebh3s989i0qf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.egytick",
+            "certificate_hash": "e03aaf88b7bb2e46a6dea33375b0144a6c735bfe"
+          }
+        },
+        {
+          "client_id": "468633162217-m5gmslqm27otdpoau33cjs3ip2l6t73r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3FWFT_C2iGF-ri1rNnmTAYBiJlDqPo54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "468633162217-m5gmslqm27otdpoau33cjs3ip2l6t73r.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "468633162217-ur9ascnt6d6un45tetetmpur84craogq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.google.firebase.presents.egytick"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
