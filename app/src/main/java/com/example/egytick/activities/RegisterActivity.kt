@@ -18,6 +18,9 @@ class RegisterActivity : BaseActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize Firebase Auth
+        firebaseAuth = FirebaseAuth.getInstance()
+
         setSupportActionBar(binding.toolbarRegisterActivity)
 
         val actionBar = supportActionBar
@@ -33,7 +36,11 @@ class RegisterActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        binding.btnRegister.setOnClickListener { validateRegisterDetails() }
+        binding.btnRegister.setOnClickListener {
+            if (validateRegisterDetails()) {
+                registerUser()
+            }
+        }
     }
 
     private fun validateRegisterDetails(): Boolean {
@@ -67,5 +74,35 @@ class RegisterActivity : BaseActivity() {
                 true
             }
         }
+    }
+
+    private fun registerUser() {
+        // Get the text from edit text and trim the space
+        val email: String = binding.etEmail.text.toString().trim { it <= ' ' }
+        val password: String = binding.etPassword.text.toString().trim { it <= ' ' }
+
+        // Create an instance and create a register a user with email and password.
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                // If the registration is successfully done
+                if (task.isSuccessful) {
+                    // Firebase registered user
+                    val firebaseUser = task.result?.user
+                    val registeredEmail = firebaseUser?.email
+
+                    showErrorSnackBar("You are registered successfully.", false)
+
+                    // Navigate to the main activity
+                    val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    intent.putExtra("user_id", firebaseUser?.uid)
+                    intent.putExtra("email_id", registeredEmail)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    // If the registering is not successful then show an error message.
+                    showErrorSnackBar(task.exception?.message.toString(), true)
+                }
+            }
     }
 }
