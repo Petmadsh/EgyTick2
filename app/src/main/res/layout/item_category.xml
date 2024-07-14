@@ -11,7 +11,8 @@
         android:layout_height="100dp"
         android:scaleType="centerCrop" />
 
-    <TextView
+    <com.example.egytick.utils.TextViewBold
+        android:layout_gravity="center"
         android:id="@+id/categoryTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

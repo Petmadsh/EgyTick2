@@ -11,14 +11,14 @@
         android:layout_height="200dp"
         android:scaleType="centerCrop" />
 
-    <TextView
+    <com.example.egytick.utils.TextViewBold
         android:id="@+id/cityName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textSize="18sp" />
 
-    <TextView
+    <com.example.egytick.utils.TextView
         android:id="@+id/cityDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

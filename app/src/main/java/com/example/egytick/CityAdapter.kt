@@ -31,8 +31,14 @@ class CityAdapter : RecyclerView.Adapter<CityAdapter.CityViewHolder>() {
             binding.cityName.text = city.name
             binding.cityDescription.text = city.description
             val context = binding.cityImage.context
-            val imageResId = context.resources.getIdentifier(city.image, "drawable", context.packageName)
-            binding.cityImage.setImageResource(imageResId)
+            val resourceName = extractResourceName(city.image)
+            val imageResId = context.resources.getIdentifier(resourceName, "drawable", context.packageName)
+            if (imageResId != 0) {
+                Glide.with(context)
+                    .load(imageResId)
+                    .centerCrop()
+                    .into(binding.cityImage)
+            }
         }
     }
 }
