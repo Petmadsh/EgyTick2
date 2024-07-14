@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.egytick.databinding.FragmentCityDetailBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -15,8 +17,6 @@ class CityDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var firestore: FirebaseFirestore
-    private lateinit var cityImagesAdapter: CityImagesAdapter
-    private lateinit var placesAdapter: PlacesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,15 +30,6 @@ class CityDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         firestore = FirebaseFirestore.getInstance()
-
-        // Set up RecyclerViews
-        cityImagesAdapter = CityImagesAdapter()
-        binding.cityImagesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding.cityImagesRecyclerView.adapter = cityImagesAdapter
-
-        placesAdapter = PlacesAdapter()
-        binding.placesRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.placesRecyclerView.adapter = placesAdapter
 
         // Fetch city data and places
         val cityName = arguments?.getString("cityName") ?: ""
@@ -56,7 +47,7 @@ class CityDetailFragment : Fragment() {
                             for (cityDataDocument in cityDataResult) {
                                 binding.cityDescription.text = cityDataDocument.getString("description") ?: ""
                                 val images = cityDataDocument.get("image") as? List<String> ?: emptyList()
-                                cityImagesAdapter.submitList(images)
+                                addImagesToContainer(images, binding.cityImagesContainer)
                             }
                         }
                 }
@@ -69,17 +60,63 @@ class CityDetailFragment : Fragment() {
                 for (document in result) {
                     firestore.collection("cities").document(document.id).collection("places").get()
                         .addOnSuccessListener { placeResult ->
-                            val places = placeResult.map { placeDocument ->
-                                Place(
-                                    name = placeDocument.getString("name") ?: "",
-                                    description = placeDocument.getString("description") ?: "",
-                                    image = placeDocument.getString("image") ?: ""
-                                )
+                            for (placeDocument in placeResult) {
+                                val placeName = placeDocument.getString("name") ?: ""
+                                val placeDescription = placeDocument.getString("description") ?: ""
+                                val placeImage = placeDocument.getString("image") ?: ""
+                                addPlaceToContainer(placeName, placeDescription, placeImage, binding.placesContainer)
                             }
-                            placesAdapter.submitList(places)
                         }
                 }
             }
+    }
+
+    private fun addImagesToContainer(images: List<String>, container: LinearLayout) {
+        for (imagePath in images) {
+            val imageView = ImageView(context)
+            val layoutParams = LinearLayout.LayoutParams(1100, 900)  // Adjust width and height as needed
+            layoutParams.marginEnd = 8
+            imageView.layoutParams = layoutParams
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+
+            val context = imageView.context
+            val resourceName = extractResourceName(imagePath)
+            val imageResId = context.resources.getIdentifier(resourceName, "drawable", context.packageName)
+            if (imageResId != 0) {
+                Glide.with(context)
+                    .load(imageResId)
+                    .into(imageView)
+            }
+
+            container.addView(imageView)
+        }
+    }
+
+    private fun addPlaceToContainer(name: String, description: String, image: String, container: LinearLayout) {
+        val placeView = layoutInflater.inflate(R.layout.item_place, container, false)
+
+        val placeNameTextView = placeView.findViewById<com.example.egytick.utils.TextViewBold>(R.id.placeName)
+        val placeDescriptionTextView = placeView.findViewById<com.example.egytick.utils.TextView>(R.id.placeDescription)
+        val placeImageView = placeView.findViewById<ImageView>(R.id.placeImage)
+
+        placeNameTextView.text = name
+        placeDescriptionTextView.text = description
+
+        val context = placeImageView.context
+        val resourceName = extractResourceName(image)
+        val imageResId = context.resources.getIdentifier(resourceName, "drawable", context.packageName)
+        if (imageResId != 0) {
+            Glide.with(context)
+                .load(imageResId)
+                .centerCrop()
+                .into(placeImageView)
+        }
+
+        container.addView(placeView)
+    }
+
+    private fun extractResourceName(path: String): String {
+        return path.substringAfterLast('/').substringBeforeLast('.')
     }
 
     override fun onDestroyView() {
