@@ -37,7 +37,9 @@ class Home : Fragment() {
         binding.categoriesRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         binding.categoriesRecyclerView.adapter = categoryAdapter
 
-        cityAdapter = CityAdapter()
+        cityAdapter = CityAdapter { cityName ->
+            navigateToCityDetail(cityName)
+        }
         binding.citiesRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.citiesRecyclerView.adapter = cityAdapter
 
@@ -73,6 +75,18 @@ class Home : Fragment() {
                 }
                 cityAdapter.submitList(cities)
             }
+    }
+
+    private fun navigateToCityDetail(cityName: String) {
+        val fragment = CityDetailFragment().apply {
+            arguments = Bundle().apply {
+                putString("cityName", cityName)
+            }
+        }
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroyView() {
