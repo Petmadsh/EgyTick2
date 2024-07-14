@@ -115,10 +115,6 @@ class CityDetailFragment : Fragment() {
         container.addView(placeView)
     }
 
-    private fun extractResourceName(path: String): String {
-        return path.substringAfterLast('/').substringBeforeLast('.')
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

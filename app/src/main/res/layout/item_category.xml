@@ -7,15 +7,16 @@
 
     <ImageView
         android:id="@+id/categoryImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerCrop" />
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center" />
 
     <com.example.egytick.utils.TextViewBold
-        android:layout_gravity="center"
         android:id="@+id/categoryTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:layout_gravity="center" />
 </LinearLayout>
