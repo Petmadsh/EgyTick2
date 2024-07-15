@@ -1,59 +1,114 @@
 package com.example.egytick
 
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import com.example.egytick.databinding.FragmentTicketsBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.WriterException
+import com.google.zxing.qrcode.QRCodeWriter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [Tickets.newInstance] factory method to
- * create an instance of this fragment.
- */
 class Tickets : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentTicketsBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tickets, container, false)
+    ): View {
+        _binding = FragmentTicketsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Tickets.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Tickets().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        firestore = FirebaseFirestore.getInstance()
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        loadBookings()
+    }
+
+    private fun loadBookings() {
+        val currentUser = firebaseAuth.currentUser ?: return
+        firestore.collection("bookings").whereEqualTo("email", currentUser.email).get()
+            .addOnSuccessListener { result ->
+                if (!result.isEmpty) {
+                    for (document in result.documents) {
+                        addBookingToContainer(document)
+                    }
                 }
             }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error loading bookings: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
+    private fun addBookingToContainer(document: DocumentSnapshot) {
+        val bookingView = layoutInflater.inflate(R.layout.item_booking, binding.bookingsContainer, false)
+        val placeNameTextView = bookingView.findViewById<TextView>(R.id.placeName)
+        val qrCodeImageView = bookingView.findViewById<ImageView>(R.id.qrCodeImage)
+        val cancelButton = bookingView.findViewById<Button>(R.id.cancelButton)
+
+        placeNameTextView.text = document.getString("placeId")
+
+        val bookingData = document.data.toString()
+        val qrCodeBitmap = generateQRCode(bookingData)
+        qrCodeImageView.setImageBitmap(qrCodeBitmap)
+
+        cancelButton.setOnClickListener {
+            deleteBooking(document.id)
+        }
+
+        binding.bookingsContainer.addView(bookingView)
+    }
+
+    private fun generateQRCode(data: String): Bitmap? {
+        val writer = QRCodeWriter()
+        return try {
+            val bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, 512, 512)
+            val width = bitMatrix.width
+            val height = bitMatrix.height
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    bitmap.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)
+                }
+            }
+            bitmap
+        } catch (e: WriterException) {
+            null
+        }
+    }
+
+    private fun deleteBooking(bookingId: String) {
+        firestore.collection("bookings").document(bookingId).delete()
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Booking cancelled", Toast.LENGTH_SHORT).show()
+                loadBookings()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error cancelling booking: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

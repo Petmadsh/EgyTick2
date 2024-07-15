@@ -2,12 +2,13 @@ package com.example.egytick.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.egytick.Home
-import com.example.egytick.Profile
+import com.example.egytick.ProfileFragment
 import com.example.egytick.R
 import com.example.egytick.Tickets
 import com.example.egytick.databinding.ActivityMainBinding
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.home -> replaceFragment(Home())
                 R.id.tickets -> replaceFragment(Tickets())
-                R.id.profile -> replaceFragment(Profile())
+                R.id.profile -> replaceFragment(ProfileFragment())
                 else -> {}
             }
             true

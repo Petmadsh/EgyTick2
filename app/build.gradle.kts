@@ -79,7 +79,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Add Glide dependencies
+    // Glide dependencies
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
+
+    // ZXing dependencies for QR code generation
+    implementation("com.google.zxing:core:3.4.1")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 }

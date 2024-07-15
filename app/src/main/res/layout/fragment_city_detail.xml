@@ -15,27 +15,20 @@
             android:id="@+id/cityName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/city_name"
             android:textSize="24sp"
             android:layout_marginBottom="8dp" />
 
-        <HorizontalScrollView
+        <LinearLayout
+            android:id="@+id/cityImagesContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
-
-            <LinearLayout
-                android:id="@+id/cityImagesContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp" />
 
         <com.example.egytick.utils.TextView
             android:id="@+id/cityDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/city_description"
             android:textSize="14sp"
             android:layout_marginBottom="8dp" />
 

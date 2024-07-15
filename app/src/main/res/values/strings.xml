@@ -36,5 +36,10 @@
     <string name="places">Places</string>
     <string name="city_name">City Name</string>
 
+    <string-array name="visitor_type_array">
+        <item>Student</item>
+        <item>Other</item>
+    </string-array>
+
 
 </resources>

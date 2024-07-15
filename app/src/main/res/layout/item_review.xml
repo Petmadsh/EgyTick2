@@ -5,24 +5,19 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <ImageView
-        android:id="@+id/placeImage"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:layout_marginBottom="8dp" />
-
-    <com.example.egytick.utils.TextViewBold
-        android:id="@+id/placeName"
+    <TextView
+        android:id="@+id/reviewText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:text="Review text"
+        android:textSize="16sp"
         android:layout_marginBottom="4dp" />
 
-    <com.example.egytick.utils.TextView
-        android:id="@+id/placeDescription"
+    <TextView
+        android:id="@+id/reviewRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Rating"
         android:textSize="14sp"
         android:layout_marginBottom="4dp" />
 </LinearLayout>

@@ -41,10 +41,12 @@ class CityDetailFragment : Fragment() {
     private fun fetchCityData(cityName: String) {
         firestore.collection("cities").whereEqualTo("name", cityName).get()
             .addOnSuccessListener { result ->
-                for (document in result) {
+                if (!result.isEmpty) {
+                    val document = result.documents[0]
                     firestore.collection("cities").document(document.id).collection("citydata").get()
                         .addOnSuccessListener { cityDataResult ->
-                            for (cityDataDocument in cityDataResult) {
+                            if (!cityDataResult.isEmpty) {
+                                val cityDataDocument = cityDataResult.documents[0]
                                 binding.cityDescription.text = cityDataDocument.getString("description") ?: ""
                                 val images = cityDataDocument.get("image") as? List<String> ?: emptyList()
                                 addImagesToContainer(images, binding.cityImagesContainer)
@@ -57,14 +59,19 @@ class CityDetailFragment : Fragment() {
     private fun fetchPlaces(cityName: String) {
         firestore.collection("cities").whereEqualTo("name", cityName).get()
             .addOnSuccessListener { result ->
-                for (document in result) {
-                    firestore.collection("cities").document(document.id).collection("places").get()
+                if (!result.isEmpty) {
+                    val document = result.documents[0]
+                    val cityId = document.id
+                    firestore.collection("cities").document(cityId).collection("places").get()
                         .addOnSuccessListener { placeResult ->
-                            for (placeDocument in placeResult) {
-                                val placeName = placeDocument.getString("name") ?: ""
-                                val placeDescription = placeDocument.getString("description") ?: ""
-                                val placeImage = placeDocument.getString("image") ?: ""
-                                addPlaceToContainer(placeName, placeDescription, placeImage, binding.placesContainer)
+                            if (!placeResult.isEmpty) {
+                                for (placeDocument in placeResult) {
+                                    val placeId = placeDocument.id
+                                    val placeName = placeDocument.getString("name") ?: ""
+                                    val placeDescription = placeDocument.getString("description") ?: ""
+                                    val placeImage = placeDocument.getString("image") ?: ""
+                                    addPlaceToContainer(cityId, placeId, placeName, placeDescription, placeImage, binding.placesContainer)
+                                }
                             }
                         }
                 }
@@ -72,9 +79,10 @@ class CityDetailFragment : Fragment() {
     }
 
     private fun addImagesToContainer(images: List<String>, container: LinearLayout) {
+        container.removeAllViews() // Clear existing views
         for (imagePath in images) {
             val imageView = ImageView(context)
-            val layoutParams = LinearLayout.LayoutParams(1100, 900)  // Adjust width and height as needed
+            val layoutParams = LinearLayout.LayoutParams(300, 400)  // Adjust width and height as needed
             layoutParams.marginEnd = 8
             imageView.layoutParams = layoutParams
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
@@ -92,7 +100,7 @@ class CityDetailFragment : Fragment() {
         }
     }
 
-    private fun addPlaceToContainer(name: String, description: String, image: String, container: LinearLayout) {
+    private fun addPlaceToContainer(cityId: String, placeId: String, name: String, description: String, image: String, container: LinearLayout) {
         val placeView = layoutInflater.inflate(R.layout.item_place, container, false)
 
         val placeNameTextView = placeView.findViewById<com.example.egytick.utils.TextViewBold>(R.id.placeName)
@@ -112,7 +120,25 @@ class CityDetailFragment : Fragment() {
                 .into(placeImageView)
         }
 
+        // Set click listener to navigate to PlaceDetailFragment
+        placeView.setOnClickListener {
+            navigateToPlaceDetail(cityId, placeId)
+        }
+
         container.addView(placeView)
+    }
+
+    private fun navigateToPlaceDetail(cityId: String, placeId: String) {
+        val fragment = PlaceDetailFragment().apply {
+            arguments = Bundle().apply {
+                putString("placeId", placeId)
+                putString("cityId", cityId)
+            }
+        }
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroyView() {

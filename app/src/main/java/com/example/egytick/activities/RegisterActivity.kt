@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import com.example.egytick.R
 import com.example.egytick.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class RegisterActivity : BaseActivity() {
     private lateinit var binding: ActivityRegisterBinding
@@ -80,6 +81,8 @@ class RegisterActivity : BaseActivity() {
         // Get the text from edit text and trim the space
         val email: String = binding.etEmail.text.toString().trim { it <= ' ' }
         val password: String = binding.etPassword.text.toString().trim { it <= ' ' }
+        val firstName: String = binding.etFirstName.text.toString().trim { it <= ' ' }
+        val lastName: String = binding.etLastName.text.toString().trim { it <= ' ' }
 
         // Create an instance and create a register a user with email and password.
         firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -92,17 +95,34 @@ class RegisterActivity : BaseActivity() {
 
                     showErrorSnackBar("You are registered successfully.", false)
 
-                    // Navigate to the main activity
-                    val intent = Intent(this@RegisterActivity, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    intent.putExtra("user_id", firebaseUser?.uid)
-                    intent.putExtra("email_id", registeredEmail)
-                    startActivity(intent)
-                    finish()
+                    // Save user data in Firestore
+                    val user = hashMapOf(
+                        "firstName" to firstName,
+                        "lastName" to lastName,
+                        "email" to email
+                    )
+
+                    firebaseUser?.uid?.let {
+                        FirebaseFirestore.getInstance().collection("users").document(it)
+                            .set(user)
+                            .addOnSuccessListener {
+                                // Navigate to the main activity
+                                val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                intent.putExtra("user_id", firebaseUser.uid)
+                                intent.putExtra("email_id", registeredEmail)
+                                startActivity(intent)
+                                finish()
+                            }
+                            .addOnFailureListener { e ->
+                                showErrorSnackBar("Failed to save user data: ${e.message}", true)
+                            }
+                    }
                 } else {
                     // If the registering is not successful then show an error message.
                     showErrorSnackBar(task.exception?.message.toString(), true)
                 }
             }
     }
+
 }
