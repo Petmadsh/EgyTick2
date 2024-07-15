@@ -1,5 +1,6 @@
 package com.example.egytick
 
+import android.app.AlertDialog
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
@@ -18,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
+
 
 class Tickets : Fragment() {
 
@@ -48,7 +50,10 @@ class Tickets : Fragment() {
         val currentUser = firebaseAuth.currentUser ?: return
         firestore.collection("bookings").whereEqualTo("email", currentUser.email).get()
             .addOnSuccessListener { result ->
-                if (!result.isEmpty) {
+                if (result.isEmpty) {
+                    showNoTicketsMessage()
+                } else {
+                    binding.bookingsContainer.removeAllViews()
                     for (document in result.documents) {
                         addBookingToContainer(document)
                     }
@@ -72,7 +77,7 @@ class Tickets : Fragment() {
         qrCodeImageView.setImageBitmap(qrCodeBitmap)
 
         cancelButton.setOnClickListener {
-            deleteBooking(document.id)
+            showConfirmationDialog(document.id, bookingView)
         }
 
         binding.bookingsContainer.addView(bookingView)
@@ -95,12 +100,30 @@ class Tickets : Fragment() {
             null
         }
     }
-
-    private fun deleteBooking(bookingId: String) {
+    private fun showConfirmationDialog(bookingId: String, bookingView: View) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Cancel Booking")
+            .setMessage("Are you sure you want to cancel this booking?")
+            .setPositiveButton("Yes") { dialog, which ->
+                deleteBooking(bookingId, bookingView)
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+    private fun showNoTicketsMessage() {
+        val noTicketsTextView = TextView(context).apply {
+            text = "Non ci sono biglietti"
+            textSize = 18f
+            setTextColor(Color.BLACK)
+            textAlignment = View.TEXT_ALIGNMENT_CENTER
+        }
+        binding.bookingsContainer.addView(noTicketsTextView)
+    }
+    private fun deleteBooking(bookingId: String, bookingView: View) {
         firestore.collection("bookings").document(bookingId).delete()
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Booking cancelled", Toast.LENGTH_SHORT).show()
-                loadBookings()
+                binding.bookingsContainer.removeView(bookingView)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), "Error cancelling booking: ${e.message}", Toast.LENGTH_LONG).show()

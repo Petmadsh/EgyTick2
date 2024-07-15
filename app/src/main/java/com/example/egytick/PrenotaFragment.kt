@@ -1,5 +1,6 @@
 package com.example.egytick
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ class PrenotaFragment : Fragment() {
 
     private lateinit var firestore: FirebaseFirestore
     private lateinit var firebaseAuth: FirebaseAuth
+    private var selectedDate: Calendar? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,9 +37,33 @@ class PrenotaFragment : Fragment() {
 
         val placeId = arguments?.getString("placeId") ?: return
 
+        // Inizializzare selectedDate solo se non è già inizializzato
+        if (selectedDate == null) {
+            selectedDate = Calendar.getInstance()
+        }
+
+        // Mostra il DatePickerDialog al caricamento del fragment
+        showDatePickerDialog()
+
         binding.btnConfirmBooking.setOnClickListener {
             createBooking(placeId)
         }
+    }
+
+    private fun showDatePickerDialog() {
+        val year = selectedDate?.get(Calendar.YEAR) ?: Calendar.getInstance().get(Calendar.YEAR)
+        val month = selectedDate?.get(Calendar.MONTH) ?: Calendar.getInstance().get(Calendar.MONTH)
+        val day = selectedDate?.get(Calendar.DAY_OF_MONTH) ?: Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+            selectedDate = Calendar.getInstance().apply {
+                set(selectedYear, selectedMonth, selectedDay)
+            }
+            Toast.makeText(requireContext(), "Data selezionata: ${selectedDay}/${selectedMonth + 1}/${selectedYear}", Toast.LENGTH_SHORT).show()
+        }, year, month, day)
+
+        datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+        datePickerDialog.show()
     }
 
     private fun createBooking(placeId: String) {
@@ -45,17 +71,15 @@ class PrenotaFragment : Fragment() {
 
         val email = currentUser.email ?: ""
         val visitorType = binding.spVisitorType.selectedItem.toString()
-        val numberOfVisitors = binding.etNumberOfVisitors.text.toString().toIntOrNull() ?: 0
-        val selectedDate = binding.datePicker.run {
-            Calendar.getInstance().apply {
-                set(year, month, dayOfMonth)
-            }.time
+        val selectedDate = this.selectedDate?.time ?: run {
+            Toast.makeText(requireContext(), "Seleziona una data", Toast.LENGTH_LONG).show()
+            showDatePickerDialog()
+            return
         }
 
         val bookingDetails = hashMapOf(
             "email" to email,
             "visitorType" to visitorType,
-            "numberOfVisitors" to numberOfVisitors,
             "date" to selectedDate,
             "placeId" to placeId
         )
