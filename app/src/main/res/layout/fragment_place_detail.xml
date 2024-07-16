@@ -44,67 +44,18 @@
             android:textSize="18sp"
             android:layout_marginBottom="8dp" />
 
-        <com.example.egytick.utils.TextViewBold
-            android:id="@+id/averageRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
-
-        <com.example.egytick.utils.TextViewBold
-            android:id="@+id/reviewsTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reviews"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
-
-        <LinearLayout
-            android:id="@+id/reviewsContainer"
+        <Button
+            android:id="@+id/reviewButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:text="Review"
+            android:layout_marginTop="16dp" />
 
-        <LinearLayout
+        <Button
+            android:id="@+id/bookButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp">
-
-            <com.example.egytick.utils.TextViewBold
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add a Review"
-                android:textSize="18sp"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/reviewComment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Write your review here"
-                android:minHeight="48dp" />
-
-            <RatingBar
-                android:id="@+id/reviewRating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:stepSize="1.0"
-                android:layout_marginBottom="8dp" />
-
-            <Button
-                android:id="@+id/submitReviewButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Submit Review" />
-
-            <Button
-                android:id="@+id/bookButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Book"
-                android:layout_marginTop="16dp" />
-        </LinearLayout>
+            android:text="Book"
+            android:layout_marginTop="16dp" />
     </LinearLayout>
 </ScrollView>

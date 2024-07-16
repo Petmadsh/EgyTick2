@@ -43,6 +43,11 @@ class PlaceDetailFragment : Fragment() {
         binding.bookButton.setOnClickListener {
             navigateToPrenotaFragment(placeId)
         }
+
+        // Set click listener for the review button
+        binding.reviewButton.setOnClickListener {
+            navigateToReviewFragment(placeId)
+        }
     }
 
     private fun fetchPlaceData(cityId: String, placeId: String) {
@@ -67,22 +72,6 @@ class PlaceDetailFragment : Fragment() {
                         binding.placeLocation.setOnClickListener {
                             openLocationInMaps(location)
                         }
-                    }
-
-                    // Load reviews
-                    fetchReviews(cityId, placeId)
-                }
-            }
-    }
-
-    private fun fetchReviews(cityId: String, placeId: String) {
-        firestore.collection("cities").document(cityId).collection("places").document(placeId).collection("reviews").get()
-            .addOnSuccessListener { reviewsResult ->
-                if (!reviewsResult.isEmpty) {
-                    for (reviewDocument in reviewsResult.documents) {
-                        val reviewText = reviewDocument.getString("reviewText") ?: ""
-                        val reviewRating = reviewDocument.getDouble("reviewRating") ?: 0.0
-                        addReviewToContainer(reviewText, reviewRating, binding.reviewsContainer)
                     }
                 }
             }
@@ -121,17 +110,6 @@ class PlaceDetailFragment : Fragment() {
         }
     }
 
-    private fun addReviewToContainer(reviewText: String, reviewRating: Double, container: LinearLayout) {
-        val reviewView = layoutInflater.inflate(R.layout.item_review, container, false)
-        val reviewTextView = reviewView.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.reviewText)
-        val reviewRatingView = reviewView.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.reviewRating)
-
-        reviewTextView.text = reviewText
-        reviewRatingView.text = "Rating: $reviewRating"
-
-        container.addView(reviewView)
-    }
-
     private fun openLocationInMaps(location: GeoPoint) {
         val uri = Uri.parse("geo:${location.latitude},${location.longitude}?q=${location.latitude},${location.longitude}")
         val intent = Intent(Intent.ACTION_VIEW, uri)
@@ -143,6 +121,18 @@ class PlaceDetailFragment : Fragment() {
 
     private fun navigateToPrenotaFragment(placeId: String) {
         val fragment = PrenotaFragment().apply {
+            arguments = Bundle().apply {
+                putString("placeId", placeId)
+            }
+        }
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun navigateToReviewFragment(placeId: String) {
+        val fragment = ReviewFragment().apply {
             arguments = Bundle().apply {
                 putString("placeId", placeId)
             }
