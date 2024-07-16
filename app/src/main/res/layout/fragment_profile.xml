@@ -1,4 +1,3 @@
-<!-- fragment_profile.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,53 +6,75 @@
     android:padding="16dp"
     tools:context=".ProfileFragment">
 
-    <EditText
+    <com.example.egytick.utils.EditText
         android:id="@+id/etFirstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="First Name" />
+        android:hint="@string/first_name"
+        android:minHeight="48dp"
+        android:padding="12dp" />
 
-    <EditText
+    <com.example.egytick.utils.EditText
         android:id="@+id/etLastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Last Name" />
+        android:hint="@string/last_name"
+        android:minHeight="48dp"
+        android:padding="12dp" />
 
-    <EditText
+    <com.example.egytick.utils.EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:padding="12dp" />
 
-    <TextView
+    <com.example.egytick.utils.TextView
         android:id="@+id/tvChangePassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Change your password"
+        android:text="@string/change_your_password"
+        android:textSize="16sp"
         android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true"
+        android:minHeight="48dp" />
 
-    <EditText
+    <com.example.egytick.utils.EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
+        android:hint="@string/password"
         android:inputType="textPassword"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:minHeight="48dp"
+        android:padding="12dp" />
 
-    <EditText
+    <com.example.egytick.utils.EditText
         android:id="@+id/etConfirmPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Confirm Password"
+        android:hint="@string/confirm_password"
         android:inputType="textPassword"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:minHeight="48dp"
+        android:padding="12dp" />
 
-    <Button
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
+    <com.example.egytick.utils.Button
         android:id="@+id/btnUpdate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Update" />
+        android:background="@drawable/button_background"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/update"
+        android:textColor="@color/white" />
 </LinearLayout>

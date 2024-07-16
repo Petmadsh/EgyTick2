@@ -19,7 +19,7 @@
         android:id="@+id/bookingDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Booking Date"
+        android:text="@string/booking_date"
         android:textSize="14sp"
         android:paddingTop="8dp" />
 
@@ -30,9 +30,12 @@
         android:layout_gravity="center"
         android:layout_marginBottom="8dp" />
 
-    <Button
+    <com.example.egytick.utils.Button
         android:id="@+id/cancelButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cancel Booking" />
+        android:background="@drawable/button_background"
+        android:foreground="?attr/selectableItemBackground"
+        android:textColor="@color/white"
+        android:text="@string/cancel_booking" />
 </LinearLayout>

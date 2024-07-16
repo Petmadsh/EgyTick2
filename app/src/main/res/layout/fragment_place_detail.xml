@@ -32,7 +32,7 @@
                     android:orientation="horizontal" />
             </HorizontalScrollView>
 
-            <TextView
+            <com.example.egytick.utils.TextView
                 android:id="@+id/placeDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -42,23 +42,32 @@
                 android:id="@+id/mapView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_margin="8dp" />
+                android:layout_margin="8dp"
+                tools:ignore="SpeakableTextPresentCheck" />
 
-            <Button
+            <com.example.egytick.utils.Button
                 android:id="@+id/reviewButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Review"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:layout_gravity="center_horizontal" />
+                android:text="@string/review"
+                android:textColor="@color/white"
+                android:background="@drawable/button_background"
+                android:foreground="?attr/selectableItemBackground"
+                />
 
-            <Button
+            <com.example.egytick.utils.Button
                 android:id="@+id/bookButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Book"
+                android:text="@string/book_a_ticket"
+                android:textColor="@color/white"
                 android:layout_marginTop="16dp"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_background"
+                android:foreground="?attr/selectableItemBackground"
+                />
 
         </LinearLayout>
     </ScrollView>

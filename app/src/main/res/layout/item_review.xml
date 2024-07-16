@@ -9,7 +9,7 @@
         android:id="@+id/reviewText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Review text"
+        android:text="@string/review_text"
         android:textSize="16sp"
         android:layout_marginBottom="4dp" />
 
@@ -17,7 +17,7 @@
         android:id="@+id/reviewRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rating"
+        android:text="@string/rating"
         android:textSize="14sp"
         android:layout_marginBottom="4dp" />
 </LinearLayout>

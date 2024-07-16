@@ -47,5 +47,28 @@
     <string name="show_password">Show Password</string>
     <string name="hide_password">Hide Password</string> <!-- Aggiungi questa se vuoi gestire anche il caso di nascondere la password -->
     <string name="default_web_client_id">YOUR_WEB_CLIENT_ID_HERE</string>
+    <string name="review">Review</string>
+    <string name="book">Book</string>
+    <string name="book_a_visit">Book a Visit</string>
+    <string name="confirm_booking">Confirm Booking</string>
+    <string name="email">Email</string>
+    <string name="change_your_password">Change your password</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="update">Update</string>
+    <string name="book_a_ticket">book a ticket</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="reviews">Reviews</string>
+    <string name="cleanliness">Cleanliness:</string>
+    <string name="facilities">Facilities:</string>
+    <string name="staff">Staff:</string>
+    <string name="your_average_rating_0_0">Your average rating: 0.0</string>
+    <string name="overall_average_rating_0_0">Overall average rating: 0.0</string>
+    <string name="submit">Submit</string>
+    <string name="cancel_booking">Cancel Booking</string>
+    <string name="booking_date">Booking Date</string>
+    <string name="review_text">Review text</string>
+    <string name="rating">Rating</string>
 
 </resources>

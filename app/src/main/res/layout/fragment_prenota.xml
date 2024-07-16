@@ -12,7 +12,7 @@
         <com.example.egytick.utils.TextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Book a Visit"
+            android:text="@string/book_a_visit"
             android:textSize="24sp"
             android:layout_marginBottom="16dp" />
 
@@ -24,10 +24,13 @@
             android:layout_marginBottom="16dp" />
 
 
-        <Button
+        <com.example.egytick.utils.Button
             android:id="@+id/btnConfirmBooking"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirm Booking" />
+            android:background="@drawable/button_background"
+            android:foreground="?attr/selectableItemBackground"
+            android:textColor="@color/white"
+            android:text="@string/confirm_booking" />
     </LinearLayout>
 </ScrollView>
