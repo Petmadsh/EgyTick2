@@ -16,10 +16,12 @@ import com.example.egytick.databinding.FragmentTicketsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.Timestamp
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
-
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class Tickets : Fragment() {
 
@@ -69,8 +71,10 @@ class Tickets : Fragment() {
         val placeNameTextView = bookingView.findViewById<TextView>(R.id.placeName)
         val qrCodeImageView = bookingView.findViewById<ImageView>(R.id.qrCodeImage)
         val cancelButton = bookingView.findViewById<Button>(R.id.cancelButton)
+        val bookingDateTextView = bookingView.findViewById<TextView>(R.id.bookingDate)
 
         val placeId = document.getString("placeId")
+        val bookingTimestamp = document.getTimestamp("date") // Usare getTimestamp per ottenere il campo come Timestamp
 
         if (placeId != null) {
             getPlaceName(placeId) { placeName ->
@@ -78,6 +82,13 @@ class Tickets : Fragment() {
             }
         } else {
             placeNameTextView.text = "Unknown Place"
+        }
+
+        if (bookingTimestamp != null) {
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+            bookingDateTextView.text = dateFormat.format(bookingTimestamp.toDate()) // Convertire Timestamp in Date e poi in String
+        } else {
+            bookingDateTextView.text = "Unknown Date"
         }
 
         val bookingData = document.data.toString()
@@ -90,7 +101,6 @@ class Tickets : Fragment() {
 
         binding.bookingsContainer.addView(bookingView)
     }
-
 
     private fun getPlaceName(placeId: String, callback: (String) -> Unit) {
         firestore.collection("cities").get()
@@ -124,7 +134,6 @@ class Tickets : Fragment() {
                 callback("Unknown Place")
             }
     }
-
 
     private fun generateQRCode(data: String): Bitmap? {
         val writer = QRCodeWriter()

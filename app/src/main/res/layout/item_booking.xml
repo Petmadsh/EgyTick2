@@ -15,6 +15,13 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp" />
+    <TextView
+        android:id="@+id/bookingDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Booking Date"
+        android:textSize="14sp"
+        android:paddingTop="8dp" />
 
     <ImageView
         android:id="@+id/qrCodeImage"
