@@ -70,7 +70,15 @@ class Tickets : Fragment() {
         val qrCodeImageView = bookingView.findViewById<ImageView>(R.id.qrCodeImage)
         val cancelButton = bookingView.findViewById<Button>(R.id.cancelButton)
 
-        placeNameTextView.text = document.getString("placeId")
+        val placeId = document.getString("placeId")
+
+        if (placeId != null) {
+            getPlaceName(placeId) { placeName ->
+                placeNameTextView.text = placeName
+            }
+        } else {
+            placeNameTextView.text = "Unknown Place"
+        }
 
         val bookingData = document.data.toString()
         val qrCodeBitmap = generateQRCode(bookingData)
@@ -82,6 +90,41 @@ class Tickets : Fragment() {
 
         binding.bookingsContainer.addView(bookingView)
     }
+
+
+    private fun getPlaceName(placeId: String, callback: (String) -> Unit) {
+        firestore.collection("cities").get()
+            .addOnSuccessListener { citiesResult ->
+                var placeFound = false
+                var pendingRequests = citiesResult.documents.size
+
+                for (cityDocument in citiesResult.documents) {
+                    val cityId = cityDocument.id
+                    firestore.collection("cities").document(cityId).collection("places").document(placeId).get()
+                        .addOnSuccessListener { placeDocument ->
+                            pendingRequests--
+                            if (placeDocument.exists() && !placeFound) {
+                                val placeName = placeDocument.getString("name") ?: "Unknown Place"
+                                callback(placeName)
+                                placeFound = true
+                            }
+                            if (pendingRequests == 0 && !placeFound) {
+                                callback("Unknown Place")
+                            }
+                        }
+                        .addOnFailureListener {
+                            pendingRequests--
+                            if (pendingRequests == 0 && !placeFound) {
+                                callback("Unknown Place")
+                            }
+                        }
+                }
+            }
+            .addOnFailureListener {
+                callback("Unknown Place")
+            }
+    }
+
 
     private fun generateQRCode(data: String): Bitmap? {
         val writer = QRCodeWriter()
@@ -100,6 +143,7 @@ class Tickets : Fragment() {
             null
         }
     }
+
     private fun showConfirmationDialog(bookingId: String, bookingView: View) {
         AlertDialog.Builder(requireContext())
             .setTitle("Cancel Booking")
@@ -110,6 +154,7 @@ class Tickets : Fragment() {
             .setNegativeButton("No", null)
             .show()
     }
+
     private fun showNoTicketsMessage() {
         val noTicketsTextView = TextView(context).apply {
             text = "Non ci sono biglietti"
@@ -119,6 +164,7 @@ class Tickets : Fragment() {
         }
         binding.bookingsContainer.addView(noTicketsTextView)
     }
+
     private fun deleteBooking(bookingId: String, bookingView: View) {
         firestore.collection("bookings").document(bookingId).delete()
             .addOnSuccessListener {
