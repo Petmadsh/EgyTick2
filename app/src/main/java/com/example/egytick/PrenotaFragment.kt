@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import com.example.egytick.databinding.FragmentPrenotaBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import java.text.SimpleDateFormat
 import java.util.*
 
 class PrenotaFragment : Fragment() {
@@ -37,16 +39,14 @@ class PrenotaFragment : Fragment() {
 
         val placeId = arguments?.getString("placeId") ?: return
 
-        // Inizializzare selectedDate solo se non è già inizializzato
         if (selectedDate == null) {
             selectedDate = Calendar.getInstance()
         }
 
-        // Mostra il DatePickerDialog al caricamento del fragment
         showDatePickerDialog()
 
         binding.btnConfirmBooking.setOnClickListener {
-            createBooking(placeId)
+            checkExistingBooking(placeId)
         }
     }
 
@@ -66,9 +66,36 @@ class PrenotaFragment : Fragment() {
         datePickerDialog.show()
     }
 
+    private fun checkExistingBooking(placeId: String) {
+        val currentUser = firebaseAuth.currentUser ?: return
+        val email = currentUser.email ?: return
+        val selectedDate = this.selectedDate?.time ?: return
+
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val formattedDate = dateFormatter.format(selectedDate)
+
+        firestore.collection("bookings")
+            .whereEqualTo("email", email)
+            .whereEqualTo("placeId", placeId)
+            .get()
+            .addOnSuccessListener { querySnapshot: QuerySnapshot ->
+                val existingBooking = querySnapshot.documents.any { document ->
+                    val bookingDate = document.getDate("date")
+                    dateFormatter.format(bookingDate) == formattedDate
+                }
+                if (existingBooking) {
+                    Toast.makeText(requireContext(), "You already have a booking for this place on the selected date", Toast.LENGTH_LONG).show()
+                } else {
+                    createBooking(placeId)
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error checking existing bookings: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
     private fun createBooking(placeId: String) {
         val currentUser = firebaseAuth.currentUser ?: return
-
         val email = currentUser.email ?: ""
         val visitorType = binding.spVisitorType.selectedItem.toString()
         val selectedDate = this.selectedDate?.time ?: run {

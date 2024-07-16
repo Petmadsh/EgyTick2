@@ -45,27 +45,24 @@ class ReviewFragment : Fragment() {
     }
 
     private fun fetchReviewsData(placeId: String) {
-        firestore.collection("cities").get()
-            .addOnSuccessListener { citiesSnapshot ->
-                for (cityDocument in citiesSnapshot.documents) {
-                    val cityId = cityDocument.id
-                    firestore.collection("cities").document(cityId)
-                        .collection("places").document(placeId).get()
-                        .addOnSuccessListener { document ->
-                            if (document.exists()) {
-                                val totalReviews = document.getLong("totalReviews") ?: 0
-                                val totalRating = document.getDouble("totalRating") ?: 0.0
+        firestore.collection("reviews").whereEqualTo("placeId", placeId).get()
+            .addOnSuccessListener { documents ->
+                var totalReviews = 0
+                var totalRating = 0.0
 
-                                if (totalReviews > 0) {
-                                    val overallAverageRating = totalRating / totalReviews
-                                    binding.overallAverageRatingText.text = "Overall average rating: %.1f".format(overallAverageRating)
-                                }
-                            }
-                        }
-                        .addOnFailureListener { e ->
-                            showErrorSnackBar("Error loading overall average rating: ${e.message}", true)
-                        }
+                for (document in documents) {
+                    val rating = document.getDouble("averageRating") ?: 0.0
+                    totalRating += rating
+                    totalReviews++
                 }
+
+                if (totalReviews > 0) {
+                    val overallAverageRating = totalRating / totalReviews
+                    binding.overallAverageRatingText.text = "Overall average rating: %.1f".format(overallAverageRating)
+                }
+            }
+            .addOnFailureListener { e ->
+                showErrorSnackBar("Error loading overall average rating: ${e.message}", true)
             }
     }
 
@@ -93,41 +90,10 @@ class ReviewFragment : Fragment() {
         firestore.collection("reviews").add(review)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Review submitted", Toast.LENGTH_SHORT).show()
-                updatePlaceRating(placeId, userAverageRating)
+                fetchReviewsData(placeId)  // Refresh the reviews data
             }
             .addOnFailureListener { e ->
                 showErrorSnackBar("Error submitting review: ${e.message}", true)
-            }
-    }
-
-    private fun updatePlaceRating(placeId: String, newRating: Double) {
-        firestore.collection("cities").get()
-            .addOnSuccessListener { citiesSnapshot ->
-                for (cityDocument in citiesSnapshot.documents) {
-                    val cityId = cityDocument.id
-                    val placeRef = firestore.collection("cities").document(cityId)
-                        .collection("places").document(placeId)
-
-                    firestore.runTransaction { transaction ->
-                        val snapshot = transaction.get(placeRef)
-
-                        val totalReviews = snapshot.getLong("totalReviews") ?: 0
-                        val totalRating = snapshot.getDouble("totalRating") ?: 0.0
-
-                        val newTotalReviews = totalReviews + 1
-                        val newTotalRating = totalRating + newRating
-
-                        val newAverageRating = newTotalRating / newTotalReviews
-
-                        transaction.update(placeRef, "totalReviews", newTotalReviews)
-                        transaction.update(placeRef, "totalRating", newTotalRating)
-                        transaction.update(placeRef, "averageRating", newAverageRating)
-                    }.addOnSuccessListener {
-                        fetchReviewsData(placeId)  // Refresh the reviews data
-                    }.addOnFailureListener { e ->
-                        showErrorSnackBar("Error updating place rating: ${e.message}", true)
-                    }
-                }
             }
     }
 
