@@ -86,4 +86,7 @@ dependencies {
     // ZXing dependencies for QR code generation
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+
 }

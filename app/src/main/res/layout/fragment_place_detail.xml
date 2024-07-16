@@ -38,10 +38,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp" />
 
-            <TextView
-                android:id="@+id/placeLocation"
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:layout_margin="8dp" />
 
             <Button

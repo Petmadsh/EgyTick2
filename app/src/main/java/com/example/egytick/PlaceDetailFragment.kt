@@ -10,15 +10,23 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.egytick.databinding.FragmentPlaceDetailBinding
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 
-class PlaceDetailFragment : Fragment() {
+class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentPlaceDetailBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var mapView: MapView
+    private var location: GeoPoint? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +40,11 @@ class PlaceDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         firestore = FirebaseFirestore.getInstance()
+
+        // Initialize MapView
+        mapView = binding.mapView
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync(this)
 
         // Fetch place data
         val placeId = arguments?.getString("placeId") ?: return
@@ -61,10 +74,9 @@ class PlaceDetailFragment : Fragment() {
                     addImagesToContainer(additionalImages, binding.placeImagesContainer)
 
                     // Set location
-                    val location = detailsDocument.getGeoPoint("location")
+                    location = detailsDocument.getGeoPoint("location")
                     if (location != null) {
-                        val locationText = "Lat: ${location.latitude}, Lng: ${location.longitude}"
-                        binding.placeLocation.text = locationText
+                        mapView.getMapAsync(this)
                     }
                 }
             }
@@ -72,7 +84,6 @@ class PlaceDetailFragment : Fragment() {
                 showErrorSnackBar("Error loading place data: ${e.message}", true)
             }
     }
-
 
     private fun loadImage(imageName: String, imageView: ImageView) {
         val context = imageView.context
@@ -137,5 +148,39 @@ class PlaceDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // MapView lifecycle management
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        mapView.onSaveInstanceState(outState)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        location?.let {
+            val placeLatLng = LatLng(it.latitude, it.longitude)
+            googleMap.addMarker(MarkerOptions().position(placeLatLng).title("Place Location"))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placeLatLng, 15f))
+        }
     }
 }

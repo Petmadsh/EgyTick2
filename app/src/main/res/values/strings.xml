@@ -2,6 +2,8 @@
     <string name="app_name">EgyTick</string>
     <string name="title_activity_login">LoginActivity</string>
 
+    <string name="google_map_api_key">AIzaSyByLPhKAIVkp58GsysbwEQkgtAkLp2E308</string>
+
     <string name="title_login">LOGIN</string>
     <string name="et_hint_email">Email</string>
     <string name="et_hint_password">Password</string>
