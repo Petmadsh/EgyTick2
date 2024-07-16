@@ -33,7 +33,9 @@ class Home : Fragment() {
         firestore = FirebaseFirestore.getInstance()
 
         // Set up RecyclerViews
-        categoryAdapter = CategoryAdapter()
+        categoryAdapter = CategoryAdapter { category ->
+            navigateToPlaceList(category)
+        }
         binding.categoriesRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         binding.categoriesRecyclerView.adapter = categoryAdapter
 
@@ -75,6 +77,18 @@ class Home : Fragment() {
                 }
                 cityAdapter.submitList(cities)
             }
+    }
+
+    private fun navigateToPlaceList(category: String) {
+        val fragment = PlaceListFragment().apply {
+            arguments = Bundle().apply {
+                putString("category", category)
+            }
+        }
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun navigateToCityDetail(cityName: String) {

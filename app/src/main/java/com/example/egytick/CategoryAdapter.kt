@@ -1,43 +1,53 @@
 package com.example.egytick
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.example.egytick.databinding.ItemCategoryBinding
 
-class CategoryAdapter : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter(private val onCategoryClick: (String) -> Unit) :
+    RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
     private var categories: List<Category> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CategoryViewHolder(binding)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false)
+        return CategoryViewHolder(view, onCategoryClick)
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         holder.bind(categories[position])
     }
 
-    override fun getItemCount(): Int = categories.size
+    override fun getItemCount() = categories.size
 
     fun submitList(categories: List<Category>) {
         this.categories = categories
         notifyDataSetChanged()
     }
 
-    class CategoryViewHolder(private val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root) {
+    class CategoryViewHolder(itemView: View, private val onCategoryClick: (String) -> Unit) :
+        RecyclerView.ViewHolder(itemView) {
+        private val categoryImage: ImageView = itemView.findViewById(R.id.categoryImage)
+        private val categoryTitle: TextView = itemView.findViewById(R.id.categoryTitle)
+
+        private fun getImageNameFromPath(imagePath: String): String {
+            return imagePath.substringAfterLast('/').substringBeforeLast('.')
+        }
+
         fun bind(category: Category) {
-            binding.categoryTitle.text = category.title
-            val context = binding.categoryImage.context
-            val resourceName = extractResourceName(category.image)
-            val imageResId = context.resources.getIdentifier(resourceName, "drawable", context.packageName)
-            if (imageResId != 0) {
-                Glide.with(context)
-                    .load(imageResId)
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(binding.categoryImage)
+            categoryTitle.text = category.title
+            val context = itemView.context
+            val imageName = extractResourceName(category.image)
+            val resourceId = context.resources.getIdentifier(imageName, "drawable", context.packageName)
+            if (resourceId != 0) {
+                Glide.with(context).load(resourceId).into(categoryImage)
+            }
+            itemView.setOnClickListener {
+                onCategoryClick(category.title)
             }
         }
     }

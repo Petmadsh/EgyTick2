@@ -1,44 +1,52 @@
 package com.example.egytick
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.egytick.databinding.ItemPlaceBinding
+import com.google.firebase.installations.Utils
 
-class PlacesAdapter : RecyclerView.Adapter<PlacesAdapter.PlaceViewHolder>() {
+class PlacesAdapter(private val onPlaceClick: (String, String) -> Unit) :
+    RecyclerView.Adapter<PlacesAdapter.PlaceViewHolder>() {
 
     private var places: List<Place> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceViewHolder {
-        val binding = ItemPlaceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PlaceViewHolder(binding)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_place, parent, false)
+        return PlaceViewHolder(view, onPlaceClick)
     }
 
     override fun onBindViewHolder(holder: PlaceViewHolder, position: Int) {
         holder.bind(places[position])
     }
 
-    override fun getItemCount(): Int = places.size
+    override fun getItemCount() = places.size
 
     fun submitList(places: List<Place>) {
         this.places = places
         notifyDataSetChanged()
     }
 
-    class PlaceViewHolder(private val binding: ItemPlaceBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(place: Place) {
-            binding.placeName.text = place.name
-            binding.placeDescription.text = place.description
+    class PlaceViewHolder(itemView: View, private val onPlaceClick: (String, String) -> Unit) :
+        RecyclerView.ViewHolder(itemView) {
+        private val placeImage: ImageView = itemView.findViewById(R.id.placeImage)
+        private val placeName: TextView = itemView.findViewById(R.id.placeName)
+        private val placeDescription: TextView = itemView.findViewById(R.id.placeDescription)
 
-            val context = binding.placeImage.context
-            val resourceName = extractResourceName(place.image)
-            val imageResId = context.resources.getIdentifier(resourceName, "drawable", context.packageName)
-            if (imageResId != 0) {
-                Glide.with(context)
-                    .load(imageResId)
-                    .centerCrop()
-                    .into(binding.placeImage)
+        fun bind(place: Place) {
+            placeName.text = place.name
+            placeDescription.text = place.description
+            val context = itemView.context
+            val imageName = extractResourceName(place.image)
+            val resourceId = context.resources.getIdentifier(imageName, "drawable", context.packageName)
+            if (resourceId != 0) {
+                Glide.with(context).load(resourceId).into(placeImage)
+            }
+            itemView.setOnClickListener {
+                onPlaceClick(place.placeId, place.cityId)
             }
         }
     }
