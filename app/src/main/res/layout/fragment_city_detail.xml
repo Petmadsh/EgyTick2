@@ -18,12 +18,17 @@
             android:textSize="24sp"
             android:layout_marginBottom="8dp" />
 
-        <LinearLayout
-            android:id="@+id/cityImagesContainer"
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:id="@+id/cityImagesContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
 
         <com.example.egytick.utils.TextView
             android:id="@+id/cityDescription"
