@@ -43,6 +43,10 @@ class ProfileFragment : Fragment() {
                 updateUserProfile()
             }
         }
+
+        binding.tvChangePassword.setOnClickListener {
+            togglePasswordFields()
+        }
     }
 
     private fun loadUserProfile() {
@@ -71,15 +75,19 @@ class ProfileFragment : Fragment() {
                 showErrorSnackBar("Please enter last name.", true)
                 false
             }
-            TextUtils.isEmpty(binding.etPassword.text.toString().trim { it <= ' ' }) -> {
+            TextUtils.isEmpty(binding.etEmail.text.toString().trim { it <= ' ' }) -> {
+                showErrorSnackBar("Please enter email.", true)
+                false
+            }
+            binding.etPassword.visibility == View.VISIBLE && TextUtils.isEmpty(binding.etPassword.text.toString().trim { it <= ' ' }) -> {
                 showErrorSnackBar("Please enter password.", true)
                 false
             }
-            TextUtils.isEmpty(binding.etConfirmPassword.text.toString().trim { it <= ' ' }) -> {
+            binding.etPassword.visibility == View.VISIBLE && TextUtils.isEmpty(binding.etConfirmPassword.text.toString().trim { it <= ' ' }) -> {
                 showErrorSnackBar("Please confirm password.", true)
                 false
             }
-            binding.etPassword.text.toString().trim { it <= ' ' } != binding.etConfirmPassword.text.toString().trim { it <= ' ' } -> {
+            binding.etPassword.visibility == View.VISIBLE && binding.etPassword.text.toString().trim { it <= ' ' } != binding.etConfirmPassword.text.toString().trim { it <= ' ' } -> {
                 showErrorSnackBar("Passwords do not match.", true)
                 false
             }
@@ -92,6 +100,7 @@ class ProfileFragment : Fragment() {
     private fun updateUserProfile() {
         val firstName = binding.etFirstName.text.toString().trim { it <= ' ' }
         val lastName = binding.etLastName.text.toString().trim { it <= ' ' }
+        val email = binding.etEmail.text.toString().trim { it <= ' ' }
         val password = binding.etPassword.text.toString().trim { it <= ' ' }
 
         val userUpdates = hashMapOf<String, Any>(
@@ -99,20 +108,75 @@ class ProfileFragment : Fragment() {
             "lastName" to lastName
         )
 
+        val currentEmail = currentUser.email
+
         firestore.collection("users").document(currentUser.uid)
             .update(userUpdates)
             .addOnSuccessListener {
-                currentUser.updatePassword(password).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        showErrorSnackBar("Profile updated successfully.", false)
+                if (email != currentEmail) {
+                    currentUser.updateEmail(email).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            updateUserBookings(currentEmail, email)  // Passa l'email attuale e quella nuova
+                            if (binding.etPassword.visibility == View.VISIBLE) {
+                                currentUser.updatePassword(password).addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        showErrorSnackBar("Profile updated successfully.", false)
+                                    } else {
+                                        showErrorSnackBar("Error updating password: ${task.exception?.message}", true)
+                                    }
+                                }
+                            } else {
+                                showErrorSnackBar("Profile updated successfully.", false)
+                            }
+                        } else {
+                            showErrorSnackBar("Error updating email: ${task.exception?.message}", true)
+                        }
+                    }
+                } else {
+                    if (binding.etPassword.visibility == View.VISIBLE) {
+                        currentUser.updatePassword(password).addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                showErrorSnackBar("Profile updated successfully.", false)
+                            } else {
+                                showErrorSnackBar("Error updating password: ${task.exception?.message}", true)
+                            }
+                        }
                     } else {
-                        showErrorSnackBar("Error updating password: ${task.exception?.message}", true)
+                        showErrorSnackBar("Profile updated successfully.", false)
                     }
                 }
             }
             .addOnFailureListener { e ->
                 showErrorSnackBar("Error updating profile: ${e.message}", true)
             }
+    }
+
+    private fun updateUserBookings(currentEmail: String?, newEmail: String) {
+        if (currentEmail == null) return
+
+        firestore.collection("bookings").whereEqualTo("email", currentEmail).get()
+            .addOnSuccessListener { result ->
+                for (document in result.documents) {
+                    firestore.collection("bookings").document(document.id)
+                        .update("email", newEmail)
+                        .addOnFailureListener { e ->
+                            showErrorSnackBar("Error updating booking: ${e.message}", true)
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                showErrorSnackBar("Error loading bookings: ${e.message}", true)
+            }
+    }
+
+    private fun togglePasswordFields() {
+        if (binding.etPassword.visibility == View.GONE) {
+            binding.etPassword.visibility = View.VISIBLE
+            binding.etConfirmPassword.visibility = View.VISIBLE
+        } else {
+            binding.etPassword.visibility = View.GONE
+            binding.etConfirmPassword.visibility = View.GONE
+        }
     }
 
     private fun showErrorSnackBar(message: String, isError: Boolean) {
