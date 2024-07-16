@@ -41,5 +41,9 @@
         <item>Other</item>
     </string-array>
 
+    <!-- Altre stringhe già presenti -->
+    <string name="show_password">Show Password</string>
+    <string name="hide_password">Hide Password</string> <!-- Aggiungi questa se vuoi gestire anche il caso di nascondere la password -->
+    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID_HERE</string>
 
 </resources>

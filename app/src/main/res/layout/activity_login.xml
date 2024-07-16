@@ -7,7 +7,6 @@
     android:background="@color/white"
     tools:context=".activities.LoginActivity">
 
-
     <FrameLayout
         android:layout_marginTop="50dp"
         android:id="@+id/fl_header_image"
@@ -59,9 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:padding="@dimen/et_padding"
-            />
-
+            android:padding="@dimen/et_padding" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,6 +72,10 @@
         android:layout_marginEnd="16dp"
         android:hint="@string/et_hint_password"
         android:textColorHint="@color/grey"
+        app:endIconDrawable="@drawable/ic_eye"
+        app:endIconContentDescription="@string/show_password"
+        app:endIconTint="@color/grey"
+        app:endIconMode="custom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/til_email">
@@ -83,10 +84,8 @@
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:padding="@dimen/et_padding"
-            />
-
+            android:inputType="textPassword"
+            android:padding="@dimen/et_padding" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -121,8 +120,8 @@
         android:textSize="@dimen/btn_textSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_forgot_password"
-        />
+        app:layout_constraintTop_toBottomOf="@id/tv_forgot_password" />
+
     <com.example.egytick.utils.Button
         android:id="@+id/btn_login_google"
         android:layout_width="match_parent"
@@ -141,12 +140,9 @@
         android:textSize="@dimen/btn_textSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_login"
-
-        />
+        app:layout_constraintTop_toBottomOf="@id/btn_login" />
 
     <LinearLayout
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -164,9 +160,8 @@
             android:padding="@dimen/clickable_text_view_padding"
             android:text="@string/dont_have_an_account"
             android:textColor="@color/grey"
-            android:textSize="@dimen/lbl_text_view_textSize"
+            android:textSize="@dimen/lbl_text_view_textSize" />
 
-            />
         <com.example.egytick.utils.TextViewBold
             android:id="@+id/tv_register"
             android:layout_height="wrap_content"
@@ -176,14 +171,6 @@
             android:padding="@dimen/clickable_text_view_padding"
             android:text="@string/register"
             android:textColor="@color/orange"
-            android:textSize="@dimen/lbl_text_view_textSize"
-
-
-            />
-
-
+            android:textSize="@dimen/lbl_text_view_textSize" />
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
-

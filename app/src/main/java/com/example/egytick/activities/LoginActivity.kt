@@ -3,6 +3,8 @@ package com.example.egytick.activities
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.egytick.R
@@ -59,6 +61,24 @@ class LoginActivity : AppCompatActivity() {
         // Set onClickListener for Google Login Button
         binding.btnLoginGoogle.setOnClickListener {
             signInWithGoogle()
+        }
+
+        // Setup password visibility toggle
+        binding.tilPassword.setEndIconOnClickListener {
+            togglePasswordVisibility(binding.etPassword)
+        }
+    }
+
+    private fun togglePasswordVisibility(editText: com.example.egytick.utils.EditText) {
+        if (editText.transformationMethod == PasswordTransformationMethod.getInstance()) {
+            editText.transformationMethod = HideReturnsTransformationMethod.getInstance()
+        } else {
+            editText.transformationMethod = PasswordTransformationMethod.getInstance()
+        }
+
+        // Ensure text is not null before setting the selection
+        editText.text?.let {
+            editText.setSelection(it.length)
         }
     }
 

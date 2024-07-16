@@ -105,7 +105,8 @@ class ProfileFragment : Fragment() {
 
         val userUpdates = hashMapOf<String, Any>(
             "firstName" to firstName,
-            "lastName" to lastName
+            "lastName" to lastName,
+            "email" to email  // Aggiungi l'aggiornamento dell'email nel documento utente
         )
 
         val currentEmail = currentUser.email

@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EgyTick"
         tools:targetApi="31">
+
+
         <activity
             android:name=".activities.BaseActivity"
             android:exported="false" />

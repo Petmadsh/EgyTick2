@@ -3,6 +3,8 @@ package com.example.egytick.activities
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import androidx.activity.enableEdgeToEdge
 import com.example.egytick.R
 import com.example.egytick.databinding.ActivityRegisterBinding
@@ -41,6 +43,27 @@ class RegisterActivity : BaseActivity() {
             if (validateRegisterDetails()) {
                 registerUser()
             }
+        }
+
+        // Setup password visibility toggle
+        binding.tilPassword.setEndIconOnClickListener {
+            togglePasswordVisibility(binding.etPassword)
+        }
+        binding.tilConfirmPassword.setEndIconOnClickListener {
+            togglePasswordVisibility(binding.etConfirmPassword)
+        }
+    }
+
+    private fun togglePasswordVisibility(editText: com.example.egytick.utils.EditText) {
+        if (editText.transformationMethod == PasswordTransformationMethod.getInstance()) {
+            editText.transformationMethod = HideReturnsTransformationMethod.getInstance()
+        } else {
+            editText.transformationMethod = PasswordTransformationMethod.getInstance()
+        }
+
+        // Ensure text is not null before setting the selection
+        editText.text?.let {
+            editText.setSelection(it.length)
         }
     }
 
@@ -124,5 +147,4 @@ class RegisterActivity : BaseActivity() {
                 }
             }
     }
-
 }
