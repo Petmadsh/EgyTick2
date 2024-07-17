@@ -15,6 +15,10 @@
     <string name="enter_your_email">Enter Your Email</string>
     <string name="or_login_with_google">Or Login with Google</string>
 
+    <string name="title_forgot_password">Forgot Password</string>
+    <string name="btn_lbl_reset_password">Reset Password</string>
+
+
     <string name="create_an_account">CREATE AN ACCOUNT</string>
     <string name="hint_first_name">First name</string>
     <string name="hint_last_name">Last name</string>

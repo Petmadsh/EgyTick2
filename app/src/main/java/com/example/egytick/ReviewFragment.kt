@@ -58,11 +58,11 @@ class ReviewFragment : Fragment() {
 
                 if (totalReviews > 0) {
                     val overallAverageRating = totalRating / totalReviews
-                    binding.overallAverageRatingText.text = "Overall average rating: %.1f".format(overallAverageRating)
+                    binding.overallAverageRatingText.text = "Place average rating: %.1f".format(overallAverageRating)
                 }
             }
             .addOnFailureListener { e ->
-                showErrorSnackBar("Error loading overall average rating: ${e.message}", true)
+                showErrorSnackBar("Error loading place average rating: ${e.message}", true)
             }
     }
 

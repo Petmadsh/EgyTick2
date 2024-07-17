@@ -23,7 +23,7 @@ open class BaseActivity : AppCompatActivity() {
         val color = if (errorMessage) {
             ContextCompat.getColor(this@BaseActivity, R.color.colorSnackBarError)
         } else {
-            ContextCompat.getColor(this@BaseActivity, R.color.orange)
+            ContextCompat.getColor(this@BaseActivity, R.color.colorSnackBarSuccess)
         }
 
         Log.d("BaseActivity", "Snackbar color: $color")

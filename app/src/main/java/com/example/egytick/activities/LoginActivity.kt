@@ -63,6 +63,12 @@ class LoginActivity : AppCompatActivity() {
             signInWithGoogle()
         }
 
+        // Set onClickListener for Forgot Password TextView
+        binding.tvForgotPassword.setOnClickListener {
+            val intent = Intent(this@LoginActivity, ForgotPasswordActivity::class.java)
+            startActivity(intent)
+        }
+
         // Setup password visibility toggle
         binding.tilPassword.setEndIconOnClickListener {
             togglePasswordVisibility(binding.etPassword)
@@ -75,7 +81,6 @@ class LoginActivity : AppCompatActivity() {
         } else {
             editText.transformationMethod = PasswordTransformationMethod.getInstance()
         }
-
 
         editText.text?.let {
             editText.setSelection(it.length)
