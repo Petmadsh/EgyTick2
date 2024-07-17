@@ -2,7 +2,6 @@ package com.example.egytick.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -30,24 +29,36 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         // Initialize first fragment
-        replaceFragment(Home())
+        if (savedInstanceState == null) {
+            replaceFragment(Home(), false)
+        }
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.home -> replaceFragment(Home())
-                R.id.tickets -> replaceFragment(Tickets())
-                R.id.profile -> replaceFragment(ProfileFragment())
+                R.id.home -> replaceFragment(Home(), true)
+                R.id.tickets -> replaceFragment(Tickets(), true)
+                R.id.profile -> replaceFragment(ProfileFragment(), true)
                 else -> {}
             }
             true
         }
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
+    private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragmentContainer, fragment)
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(null)
+        }
         fragmentTransaction.commit()
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

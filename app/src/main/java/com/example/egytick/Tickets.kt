@@ -1,8 +1,10 @@
 package com.example.egytick
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -166,8 +168,9 @@ class Tickets : Fragment() {
 
     private fun showNoTicketsMessage() {
         val noTicketsTextView = TextView(context).apply {
-            text = "Non ci sono biglietti"
-            textSize = 18f
+            text = "There are no tickets"
+            textSize = 22f
+            setTypeface(null, Typeface.BOLD)
             setTextColor(Color.BLACK)
             textAlignment = View.TEXT_ALIGNMENT_CENTER
         }

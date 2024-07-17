@@ -99,7 +99,7 @@ class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
         container.removeAllViews() // Clear existing views
         for (imageName in images) {
             val imageView = ImageView(context)
-            val layoutParams = LinearLayout.LayoutParams(1200, 900)  // Adjust width and height as needed
+            val layoutParams = LinearLayout.LayoutParams(1200, 900)
             layoutParams.marginEnd = 8
             imageView.layoutParams = layoutParams
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP

@@ -45,7 +45,7 @@ class RegisterActivity : BaseActivity() {
             }
         }
 
-        // Setup password visibility toggle
+
         binding.tilPassword.setEndIconOnClickListener {
             togglePasswordVisibility(binding.etPassword)
         }
@@ -61,7 +61,7 @@ class RegisterActivity : BaseActivity() {
             editText.transformationMethod = PasswordTransformationMethod.getInstance()
         }
 
-        // Ensure text is not null before setting the selection
+
         editText.text?.let {
             editText.setSelection(it.length)
         }
@@ -101,7 +101,6 @@ class RegisterActivity : BaseActivity() {
     }
 
     private fun registerUser() {
-        // Get the text from edit text and trim the space
         val email: String = binding.etEmail.text.toString().trim { it <= ' ' }
         val password: String = binding.etPassword.text.toString().trim { it <= ' ' }
         val firstName: String = binding.etFirstName.text.toString().trim { it <= ' ' }
@@ -110,7 +109,6 @@ class RegisterActivity : BaseActivity() {
         // Create an instance and create a register a user with email and password.
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
-                // If the registration is successfully done
                 if (task.isSuccessful) {
                     // Firebase registered user
                     val firebaseUser = task.result?.user
@@ -142,7 +140,6 @@ class RegisterActivity : BaseActivity() {
                             }
                     }
                 } else {
-                    // If the registering is not successful then show an error message.
                     showErrorSnackBar(task.exception?.message.toString(), true)
                 }
             }

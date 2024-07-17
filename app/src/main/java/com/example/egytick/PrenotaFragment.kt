@@ -59,7 +59,7 @@ class PrenotaFragment : Fragment() {
             selectedDate = Calendar.getInstance().apply {
                 set(selectedYear, selectedMonth, selectedDay)
             }
-            Toast.makeText(requireContext(), "Data selezionata: ${selectedDay}/${selectedMonth + 1}/${selectedYear}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Selected date: ${selectedDay}/${selectedMonth + 1}/${selectedYear}", Toast.LENGTH_SHORT).show()
         }, year, month, day)
 
         datePickerDialog.datePicker.minDate = System.currentTimeMillis()
@@ -84,13 +84,13 @@ class PrenotaFragment : Fragment() {
                     dateFormatter.format(bookingDate) == formattedDate
                 }
                 if (existingBooking) {
-                    Toast.makeText(requireContext(), "You already have a booking for this place on the selected date", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "You already have a ticket for this location on the selected date", Toast.LENGTH_LONG).show()
                 } else {
                     createBooking(placeId)
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error checking existing bookings: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Error checking existing tickets: ${e.message}", Toast.LENGTH_LONG).show()
             }
     }
 
@@ -99,7 +99,7 @@ class PrenotaFragment : Fragment() {
         val email = currentUser.email ?: ""
         val visitorType = binding.spVisitorType.selectedItem.toString()
         val selectedDate = this.selectedDate?.time ?: run {
-            Toast.makeText(requireContext(), "Seleziona una data", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Select a date", Toast.LENGTH_LONG).show()
             showDatePickerDialog()
             return
         }

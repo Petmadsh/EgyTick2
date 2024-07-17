@@ -76,7 +76,7 @@ class LoginActivity : AppCompatActivity() {
             editText.transformationMethod = PasswordTransformationMethod.getInstance()
         }
 
-        // Ensure text is not null before setting the selection
+
         editText.text?.let {
             editText.setSelection(it.length)
         }
