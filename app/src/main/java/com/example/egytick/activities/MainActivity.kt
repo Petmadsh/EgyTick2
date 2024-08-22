@@ -25,6 +25,17 @@ class MainActivity : AppCompatActivity() {
         // Set up Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance()
 
+        // Check if the user's email is verified
+        val currentUser = firebaseAuth.currentUser
+        if (currentUser != null && !currentUser.isEmailVerified) {
+            firebaseAuth.signOut()
+            val intent = Intent(this@MainActivity, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            finish()
+            return
+        }
+
         // Set up the toolbar
         setSupportActionBar(binding.toolbar)
 

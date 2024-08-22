@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import com.example.egytick.R
 import com.example.egytick.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 
 class RegisterActivity : BaseActivity() {
@@ -27,10 +28,8 @@ class RegisterActivity : BaseActivity() {
         setSupportActionBar(binding.toolbarRegisterActivity)
 
         val actionBar = supportActionBar
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true)
-            actionBar.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
-        }
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar?.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
 
         binding.toolbarRegisterActivity.setNavigationOnClickListener { onBackPressed() }
 
@@ -44,7 +43,6 @@ class RegisterActivity : BaseActivity() {
                 registerUser()
             }
         }
-
 
         binding.tilPassword.setEndIconOnClickListener {
             togglePasswordVisibility(binding.etPassword)
@@ -60,8 +58,6 @@ class RegisterActivity : BaseActivity() {
         } else {
             editText.transformationMethod = PasswordTransformationMethod.getInstance()
         }
-
-
         editText.text?.let {
             editText.setSelection(it.length)
         }
@@ -112,36 +108,57 @@ class RegisterActivity : BaseActivity() {
                 if (task.isSuccessful) {
                     // Firebase registered user
                     val firebaseUser = task.result?.user
-                    val registeredEmail = firebaseUser?.email
 
-                    showErrorSnackBar("You are registered successfully.", false)
-
-                    // Save user data in Firestore
-                    val user = hashMapOf(
-                        "firstName" to firstName,
-                        "lastName" to lastName,
-                        "email" to email
-                    )
-
-                    firebaseUser?.uid?.let {
-                        FirebaseFirestore.getInstance().collection("users").document(it)
-                            .set(user)
-                            .addOnSuccessListener {
-                                // Navigate to the main activity
-                                val intent = Intent(this@RegisterActivity, MainActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                intent.putExtra("user_id", firebaseUser.uid)
-                                intent.putExtra("email_id", registeredEmail)
-                                startActivity(intent)
-                                finish()
-                            }
-                            .addOnFailureListener { e ->
-                                showErrorSnackBar("Failed to save user data: ${e.message}", true)
-                            }
+                    // Send email verification
+                    firebaseUser?.let {
+                        sendEmailVerification(firebaseUser)
                     }
+
                 } else {
                     showErrorSnackBar(task.exception?.message.toString(), true)
                 }
             }
+    }
+
+    private fun sendEmailVerification(user: FirebaseUser) {
+        user.sendEmailVerification()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    showErrorSnackBar("Verification email sent to ${user.email}. Please verify your email before logging in.", false)
+
+                    // Save user data in Firestore after sending verification email
+                    saveUserData(user)
+                } else {
+                    showErrorSnackBar("Failed to send verification email.", true)
+                }
+            }
+    }
+
+    private fun saveUserData(user: FirebaseUser) {
+        val firstName: String = binding.etFirstName.text.toString().trim { it <= ' ' }
+        val lastName: String = binding.etLastName.text.toString().trim { it <= ' ' }
+        val email: String? = user.email
+
+        // Save user data in Firestore
+        val userData = hashMapOf(
+            "firstName" to firstName,
+            "lastName" to lastName,
+            "email" to email
+        )
+
+        user.uid.let {
+            FirebaseFirestore.getInstance().collection("users").document(it)
+                .set(userData)
+                .addOnSuccessListener {
+                    // Navigate to the main activity
+                    val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    showErrorSnackBar("Failed to save user data: ${e.message}", true)
+                }
+        }
     }
 }
