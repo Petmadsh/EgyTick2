@@ -18,6 +18,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
+import com.google.gson.Gson
+import okhttp3.*
+import java.io.IOException
 
 class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
 
@@ -145,11 +148,6 @@ class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     // MapView lifecycle management
     override fun onResume() {
         super.onResume()
@@ -181,6 +179,42 @@ class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
             val placeLatLng = LatLng(it.latitude, it.longitude)
             googleMap.addMarker(MarkerOptions().position(placeLatLng).title("Place Location"))
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placeLatLng, 15f))
+
+            // Fetch and display weather for this location
+            fetchWeatherData(it.latitude, it.longitude)
         }
+    }
+
+    private fun fetchWeatherData(latitude: Double, longitude: Double) {
+        val apiKey = "b5d27ffd2d374fe692e172137242208"
+        val url = "https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$latitude,$longitude&aqi=no"
+
+        val client = OkHttpClient()
+        val request = Request.Builder().url(url).build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                requireActivity().runOnUiThread {
+                    showErrorSnackBar("Failed to load weather data", true)
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val jsonResponse = response.body?.string()
+                if (!response.isSuccessful || jsonResponse == null) {
+                    requireActivity().runOnUiThread {
+                        showErrorSnackBar("Error: ${response.message}", true)
+                    }
+                    return
+                }
+
+                val weatherData = Gson().fromJson(jsonResponse, WeatherApiResponse::class.java)
+
+                requireActivity().runOnUiThread {
+                    binding.weatherTemperature.text = "${weatherData.current.temp_c}°C"
+                    binding.weatherDescription.text = weatherData.current.condition.text
+                }
+            }
+        })
     }
 }

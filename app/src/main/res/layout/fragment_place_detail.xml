@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -20,6 +21,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Existing image container and description -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -38,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp" />
 
+            <!-- Google MapView -->
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mapView"
                 android:layout_width="match_parent"
@@ -45,6 +48,24 @@
                 android:layout_margin="8dp"
                 tools:ignore="SpeakableTextPresentCheck" />
 
+            <!-- Weather Widget -->
+            <com.example.egytick.utils.TextView
+                android:id="@+id/weatherTemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:layout_margin="8dp" />
+
+            <com.example.egytick.utils.TextView
+                android:id="@+id/weatherDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_margin="8dp" />
+
+            <!-- Review and Book buttons -->
             <com.example.egytick.utils.Button
                 android:id="@+id/reviewButton"
                 android:layout_width="match_parent"
