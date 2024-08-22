@@ -211,8 +211,17 @@ class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
                 val weatherData = Gson().fromJson(jsonResponse, WeatherApiResponse::class.java)
 
                 requireActivity().runOnUiThread {
+                    // Update the UI with weather data
                     binding.weatherTemperature.text = "${weatherData.current.temp_c}°C"
                     binding.weatherDescription.text = weatherData.current.condition.text
+
+                    // Update humidity and wind speed
+                    binding.weatherHumidity.text = "Humidity: ${weatherData.current.humidity}%"
+                    binding.weatherWind.text = "Wind: ${weatherData.current.wind_kph} km/h"
+
+                    // Load the weather icon using Glide
+                    val iconUrl = "https:${weatherData.current.condition.icon}"
+                    Glide.with(requireContext()).load(iconUrl).into(binding.weatherIcon)
                 }
             }
         })
