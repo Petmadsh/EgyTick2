@@ -40,6 +40,16 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp" />
 
+            <!-- Opening Hours -->
+            <com.example.egytick.utils.TextView
+                android:id="@+id/openingHours"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
             <!-- Google MapView -->
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mapView"
@@ -119,8 +129,7 @@
                 android:text="@string/review"
                 android:textColor="@color/white"
                 android:background="@drawable/button_background"
-                android:foreground="?attr/selectableItemBackground"
-                />
+                android:foreground="?attr/selectableItemBackground" />
 
             <com.example.egytick.utils.Button
                 android:id="@+id/bookButton"
@@ -131,8 +140,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_background"
-                android:foreground="?attr/selectableItemBackground"
-                />
+                android:foreground="?attr/selectableItemBackground" />
 
         </LinearLayout>
     </ScrollView>

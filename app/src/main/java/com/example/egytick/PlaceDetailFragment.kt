@@ -76,6 +76,10 @@ class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
                     val additionalImages = detailsDocument.get("images") as? List<String> ?: emptyList()
                     addImagesToContainer(additionalImages, binding.placeImagesContainer)
 
+                    // Display opening hours
+                    val openingHours = detailsDocument.get("openingHours") as? List<String> ?: emptyList()
+                    displayOpeningHours(openingHours)
+
                     // Set location
                     location = detailsDocument.getGeoPoint("location")
                     if (location != null) {
@@ -86,6 +90,14 @@ class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
             .addOnFailureListener { e ->
                 showErrorSnackBar("Error loading place data: ${e.message}", true)
             }
+    }
+
+    private fun displayOpeningHours(openingHours: List<String>) {
+        val openingHoursText = StringBuilder("Opening Hours:\n")
+        for (hours in openingHours) {
+            openingHoursText.append("$hours\n")
+        }
+        binding.openingHours.text = openingHoursText.toString()
     }
 
     private fun loadImage(imageName: String, imageView: ImageView) {
@@ -144,7 +156,6 @@ class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun showErrorSnackBar(message: String, isError: Boolean) {
-        // Implement your snackbar or toast here
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
