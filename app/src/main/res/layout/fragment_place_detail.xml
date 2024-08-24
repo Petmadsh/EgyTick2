@@ -50,6 +50,16 @@
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
 
+            <!-- Ticket Prices -->
+            <com.example.egytick.utils.TextView
+                android:id="@+id/ticketPrices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
             <!-- Google MapView -->
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mapView"

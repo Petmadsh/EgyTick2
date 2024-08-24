@@ -80,6 +80,10 @@ class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
                     val openingHours = detailsDocument.get("openingHours") as? List<String> ?: emptyList()
                     displayOpeningHours(openingHours)
 
+                    // Display ticket prices
+                    val ticketPrices = detailsDocument.get("ticketPrice") as? List<String> ?: emptyList()
+                    displayTicketPrices(ticketPrices)
+
                     // Set location
                     location = detailsDocument.getGeoPoint("location")
                     if (location != null) {
@@ -98,6 +102,14 @@ class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
             openingHoursText.append("$hours\n")
         }
         binding.openingHours.text = openingHoursText.toString()
+    }
+
+    private fun displayTicketPrices(ticketPrices: List<String>) {
+        val ticketPricesText = StringBuilder("Ticket Prices:\n")
+        for (price in ticketPrices) {
+            ticketPricesText.append("$price\n")
+        }
+        binding.ticketPrices.text = ticketPricesText.toString()
     }
 
     private fun loadImage(imageName: String, imageView: ImageView) {
