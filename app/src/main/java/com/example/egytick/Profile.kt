@@ -1,12 +1,16 @@
 package com.example.egytick
 
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.example.egytick.activities.LoginActivity
 import com.example.egytick.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -39,13 +43,15 @@ class ProfileFragment : Fragment() {
         loadUserProfile()
 
         binding.btnUpdate.setOnClickListener {
-            if (validateProfileDetails()) {
-                updateUserProfile()
-            }
+            confirmUpdateProfile()
         }
 
         binding.tvChangePassword.setOnClickListener {
             togglePasswordFields()
+        }
+
+        binding.btnLogout.setOnClickListener {
+            confirmLogout()
         }
     }
 
@@ -63,6 +69,36 @@ class ProfileFragment : Fragment() {
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), "Error loading profile: ${e.message}", Toast.LENGTH_LONG).show()
             }
+    }
+
+    private fun confirmUpdateProfile() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Update Profile")
+            .setMessage("Are you sure you want to update your profile?")
+            .setPositiveButton("Yes") { dialog, _ ->
+                dialog.dismiss()
+                if (validateProfileDetails()) {
+                    updateUserProfile()
+                }
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun confirmLogout() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes") { dialog, _ ->
+                dialog.dismiss()
+                logoutUser()
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun validateProfileDetails(): Boolean {
@@ -106,7 +142,7 @@ class ProfileFragment : Fragment() {
         val userUpdates = hashMapOf<String, Any>(
             "firstName" to firstName,
             "lastName" to lastName,
-            "email" to email  // Aggiungi l'aggiornamento dell'email nel documento utente
+            "email" to email  // Update email in Firestore
         )
 
         val currentEmail = currentUser.email
@@ -117,7 +153,7 @@ class ProfileFragment : Fragment() {
                 if (email != currentEmail) {
                     currentUser.updateEmail(email).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            updateUserBookings(currentEmail, email)  // Passa l'email attuale e quella nuova
+                            updateUserBookings(currentEmail, email)  // Pass current and new email
                             if (binding.etPassword.visibility == View.VISIBLE) {
                                 currentUser.updatePassword(password).addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
@@ -178,6 +214,14 @@ class ProfileFragment : Fragment() {
             binding.etPassword.visibility = View.GONE
             binding.etConfirmPassword.visibility = View.GONE
         }
+    }
+
+    private fun logoutUser() {
+        firebaseAuth.signOut()
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun showErrorSnackBar(message: String, isError: Boolean) {

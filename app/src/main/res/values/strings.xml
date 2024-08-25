@@ -79,5 +79,6 @@
     <string name="booking_date">Booking Date</string>
     <string name="review_text">Review text</string>
     <string name="rating">Rating</string>
+    <string name="logout">logout</string>
 
 </resources>

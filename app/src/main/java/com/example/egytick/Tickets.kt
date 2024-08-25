@@ -18,7 +18,6 @@ import com.example.egytick.databinding.FragmentTicketsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.Timestamp
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
@@ -68,6 +67,7 @@ class Tickets : Fragment() {
             }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun addBookingToContainer(document: DocumentSnapshot) {
         val bookingView = layoutInflater.inflate(R.layout.item_booking, binding.bookingsContainer, false)
         val placeNameTextView = bookingView.findViewById<TextView>(R.id.placeName)
@@ -76,7 +76,7 @@ class Tickets : Fragment() {
         val bookingDateTextView = bookingView.findViewById<TextView>(R.id.bookingDate)
 
         val placeId = document.getString("placeId")
-        val bookingTimestamp = document.getTimestamp("date") // Usare getTimestamp per ottenere il campo come Timestamp
+        val bookingTimestamp = document.getTimestamp("date")
 
         if (placeId != null) {
             getPlaceName(placeId) { placeName ->
@@ -86,15 +86,21 @@ class Tickets : Fragment() {
             placeNameTextView.text = "Unknown Place"
         }
 
-        if (bookingTimestamp != null) {
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-            bookingDateTextView.text = dateFormat.format(bookingTimestamp.toDate()) // Convertire Timestamp in Date e poi in String
+        val formattedDate: String = if (bookingTimestamp != null) {
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+            dateFormat.format(bookingTimestamp.toDate())
         } else {
-            bookingDateTextView.text = "Unknown Date"
+            "Unknown Date"
         }
+        bookingDateTextView.text = formattedDate
 
-        val bookingData = document.data.toString()
-        val qrCodeBitmap = generateQRCode(bookingData)
+        // Convert the document data to a map, then modify the "date" field to be a formatted string
+        val bookingData = document.data?.toMutableMap() ?: mutableMapOf()
+        bookingData["date"] = formattedDate
+
+        // Convert the modified booking data map back to a string for QR code generation
+        val bookingDataString = bookingData.entries.joinToString(", ") { "${it.key}=${it.value}" }
+        val qrCodeBitmap = generateQRCode(bookingDataString)
         qrCodeImageView.setImageBitmap(qrCodeBitmap)
 
         cancelButton.setOnClickListener {
@@ -103,6 +109,7 @@ class Tickets : Fragment() {
 
         binding.bookingsContainer.addView(bookingView)
     }
+
 
     private fun getPlaceName(placeId: String, callback: (String) -> Unit) {
         firestore.collection("cities").get()
@@ -159,7 +166,7 @@ class Tickets : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle("Cancel Booking")
             .setMessage("Are you sure you want to cancel this booking?")
-            .setPositiveButton("Yes") { dialog, which ->
+            .setPositiveButton("Yes") { _, _ ->
                 deleteBooking(bookingId, bookingView)
             }
             .setNegativeButton("No", null)

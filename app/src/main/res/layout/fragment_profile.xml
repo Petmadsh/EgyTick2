@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -69,6 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="16dp" />
 
+    <!-- The button that needs to be in your layout -->
     <com.example.egytick.utils.Button
         android:id="@+id/btnUpdate"
         android:layout_width="match_parent"
@@ -77,4 +79,17 @@
         android:foreground="?attr/selectableItemBackground"
         android:text="@string/update"
         android:textColor="@color/white" />
+
+    <!-- The logout button added at the bottom -->
+    <com.example.egytick.utils.Button
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_background"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/logout"
+        android:textColor="@color/white"
+        android:layout_gravity="bottom"
+        />
 </LinearLayout>

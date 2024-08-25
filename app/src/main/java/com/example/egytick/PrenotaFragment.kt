@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.egytick.databinding.FragmentPrenotaBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -64,7 +65,7 @@ class PrenotaFragment : Fragment() {
         showDatePickerDialog()
 
         binding.btnConfirmBooking.setOnClickListener {
-            checkExistingBooking(placeId)
+            confirmBooking(placeId)
         }
     }
 
@@ -82,6 +83,20 @@ class PrenotaFragment : Fragment() {
 
         datePickerDialog.datePicker.minDate = System.currentTimeMillis()
         datePickerDialog.show()
+    }
+
+    private fun confirmBooking(placeId: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirm Booking")
+            .setMessage("Are you sure you want to confirm this booking?")
+            .setPositiveButton("Yes") { dialog, _ ->
+                dialog.dismiss()
+                checkExistingBooking(placeId)
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun checkExistingBooking(placeId: String) {

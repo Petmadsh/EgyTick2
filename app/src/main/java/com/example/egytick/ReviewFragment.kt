@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.egytick.databinding.FragmentReviewBinding
 import com.google.firebase.firestore.FirebaseFirestore
@@ -40,7 +41,7 @@ class ReviewFragment : Fragment() {
 
         // Set up click listener for the submit button
         binding.submitButton.setOnClickListener {
-            submitReview(placeId)
+            confirmSubmitReview(placeId)
         }
     }
 
@@ -73,6 +74,20 @@ class ReviewFragment : Fragment() {
 
         val averageRating = (cleanlinessRating + facilitiesRating + staffRating) / 3.0
         binding.averageUserRatingText.text = "Your average rating: %.1f".format(averageRating)
+    }
+
+    private fun confirmSubmitReview(placeId: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Submit Review")
+            .setMessage("Are you sure you want to submit your review?")
+            .setPositiveButton("Yes") { dialog, _ ->
+                dialog.dismiss()
+                submitReview(placeId)
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun submitReview(placeId: String) {

@@ -25,7 +25,7 @@ class RegisterActivity : BaseActivity() {
         // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance()
 
-        
+
 
         binding.tvLogin.setOnClickListener {
             val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
