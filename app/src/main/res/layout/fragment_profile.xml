@@ -1,95 +1,102 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".ProfileFragment">
 
-    <com.example.egytick.utils.EditText
-        android:id="@+id/etFirstName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/first_name"
-        android:minHeight="48dp"
-        android:padding="12dp" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <com.example.egytick.utils.EditText
-        android:id="@+id/etLastName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/last_name"
-        android:minHeight="48dp"
-        android:padding="12dp" />
+        <com.example.egytick.utils.EditText
+            android:id="@+id/etFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/first_name"
+            android:minHeight="48dp"
+            android:padding="12dp" />
 
-    <com.example.egytick.utils.EditText
-        android:id="@+id/etEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        android:minHeight="48dp"
-        android:padding="12dp" />
+        <com.example.egytick.utils.EditText
+            android:id="@+id/etLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/last_name"
+            android:minHeight="48dp"
+            android:padding="12dp" />
 
-    <com.example.egytick.utils.TextView
-        android:id="@+id/tvChangePassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/change_your_password"
-        android:textSize="16sp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:minHeight="48dp" />
+        <com.example.egytick.utils.EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:minHeight="48dp"
+            android:padding="12dp" />
 
-    <com.example.egytick.utils.EditText
-        android:id="@+id/etPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:visibility="gone"
-        android:minHeight="48dp"
-        android:padding="12dp" />
+        <com.example.egytick.utils.TextView
+            android:id="@+id/tvChangePassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/change_your_password"
+            android:textSize="16sp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:minHeight="48dp" />
 
-    <com.example.egytick.utils.EditText
-        android:id="@+id/etConfirmPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/confirm_password"
-        android:inputType="textPassword"
-        android:visibility="gone"
-        android:minHeight="48dp"
-        android:padding="12dp" />
+        <com.example.egytick.utils.EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:visibility="gone"
+            android:minHeight="48dp"
+            android:padding="12dp" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="16dp" />
+        <com.example.egytick.utils.EditText
+            android:id="@+id/etConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/confirm_password"
+            android:inputType="textPassword"
+            android:visibility="gone"
+            android:minHeight="48dp"
+            android:padding="12dp" />
 
-    <!-- The button that needs to be in your layout -->
-    <com.example.egytick.utils.Button
-        android:id="@+id/btnUpdate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button_background"
-        android:foreground="?attr/selectableItemBackground"
-        android:text="@string/update"
-        android:textColor="@color/white" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
 
-    <!-- The logout button added at the bottom -->
-    <com.example.egytick.utils.Button
-        android:id="@+id/btnLogout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_background"
-        android:foreground="?attr/selectableItemBackground"
-        android:text="@string/logout"
-        android:textColor="@color/white"
-        android:layout_gravity="bottom"
-        />
-</LinearLayout>
+        <!-- The button that needs to be in your layout -->
+        <com.example.egytick.utils.Button
+            android:id="@+id/btnUpdate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/update"
+            android:textColor="@color/white" />
+
+        <!-- The logout button added at the bottom -->
+        <com.example.egytick.utils.Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_background"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/logout"
+            android:textColor="@color/white"
+            android:layout_gravity="bottom"
+            />
+
+    </LinearLayout>
+
+</ScrollView>
