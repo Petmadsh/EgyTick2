@@ -137,6 +137,8 @@ class Home : Fragment() {
             // If query is empty, show cities and hide places
             binding.citiesRecyclerView.visibility = View.VISIBLE
             binding.placesRecyclerView.visibility = View.GONE
+            binding.placesTitle.visibility = View.GONE
+            binding.tvNoPlacesFound.visibility = View.GONE
             placesAdapter.submitList(emptyList())
         } else {
             // Filter the places based on the search query
@@ -145,14 +147,18 @@ class Home : Fragment() {
             }
 
             if (filteredList.isNotEmpty()) {
-                // Hide cities and show filtered places
+                // Hide cities, hide "no places" message, and show filtered places
                 binding.citiesRecyclerView.visibility = View.GONE
                 binding.placesRecyclerView.visibility = View.VISIBLE
+                binding.placesTitle.visibility = View.VISIBLE
+                binding.tvNoPlacesFound.visibility = View.GONE
                 placesAdapter.submitList(filteredList)
             } else {
-                // If no places match the query, show the cities and hide places
-                binding.citiesRecyclerView.visibility = View.VISIBLE
+                // If no places match the query, hide cities, show "no places" message, and hide places
+                binding.citiesRecyclerView.visibility = View.GONE
                 binding.placesRecyclerView.visibility = View.GONE
+                binding.placesTitle.visibility = View.GONE
+                binding.tvNoPlacesFound.visibility = View.VISIBLE
                 placesAdapter.submitList(emptyList())
             }
         }
