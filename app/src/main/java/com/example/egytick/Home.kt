@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,10 @@ class Home : Fragment() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var cityAdapter: CityAdapter
+    private lateinit var placesAdapter: PlacesAdapter
+
+    private var placeList: MutableList<Place> = mutableListOf()
+    private var cityList: MutableList<City> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,22 +37,45 @@ class Home : Fragment() {
 
         firestore = FirebaseFirestore.getInstance()
 
-        // Set up RecyclerViews
+        // Set up RecyclerViews for Categories
         categoryAdapter = CategoryAdapter { category ->
             navigateToPlaceList(category)
         }
         binding.categoriesRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         binding.categoriesRecyclerView.adapter = categoryAdapter
 
+        // Set up RecyclerView for Cities
         cityAdapter = CityAdapter { cityName ->
             navigateToCityDetail(cityName)
         }
         binding.citiesRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.citiesRecyclerView.adapter = cityAdapter
 
-        // Fetch data from Firestore
+        // Set up RecyclerView for Places (initially empty)
+        placesAdapter = PlacesAdapter { placeId, cityId ->
+            navigateToPlaceDetail(placeId, cityId)
+        }
+        binding.placesRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.placesRecyclerView.adapter = placesAdapter
+
+        // Fetch Categories, Cities, and Places
         fetchCategories()
         fetchCities()
+        fetchPlaces()
+
+        // Set up SearchView
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            android.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                filterPlaces(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filterPlaces(newText)
+                return true
+            }
+        })
     }
 
     private fun fetchCategories() {
@@ -68,15 +96,66 @@ class Home : Fragment() {
         firestore.collection("cities")
             .get()
             .addOnSuccessListener { result ->
-                val cities = result.map { document ->
+                cityList = result.map { document ->
                     City(
                         name = document.getString("name") ?: "",
                         description = document.getString("description") ?: "",
                         image = document.getString("image") ?: ""
                     )
-                }
-                cityAdapter.submitList(cities)
+                }.toMutableList()
+                cityAdapter.submitList(cityList)
             }
+    }
+
+    private fun fetchPlaces() {
+        firestore.collection("cities")
+            .get()
+            .addOnSuccessListener { result ->
+                for (cityDocument in result) {
+                    val cityId = cityDocument.id
+                    cityDocument.reference.collection("places")
+                        .get()
+                        .addOnSuccessListener { placesResult ->
+                            for (placeDocument in placesResult) {
+                                val place = Place(
+                                    name = placeDocument.getString("name") ?: "",
+                                    description = placeDocument.getString("description") ?: "",
+                                    image = placeDocument.getString("image") ?: "",
+                                    category = placeDocument.getString("category") ?: "",
+                                    placeId = placeDocument.id,
+                                    cityId = cityId
+                                )
+                                placeList.add(place)
+                            }
+                        }
+                }
+            }
+    }
+
+    private fun filterPlaces(query: String?) {
+        if (query.isNullOrEmpty()) {
+            // If query is empty, show cities and hide places
+            binding.citiesRecyclerView.visibility = View.VISIBLE
+            binding.placesRecyclerView.visibility = View.GONE
+            placesAdapter.submitList(emptyList())
+        } else {
+            // Filter the places based on the search query
+            val filteredList = placeList.filter { place ->
+                place.name.contains(query, ignoreCase = true)
+            }
+
+            if (filteredList.isNotEmpty()) {
+                // Hide cities and show filtered places
+                binding.citiesRecyclerView.visibility = View.GONE
+                binding.placesRecyclerView.visibility = View.VISIBLE
+                placesAdapter.submitList(filteredList)
+            } else {
+                // If no places match the query, show the cities and hide places
+                binding.citiesRecyclerView.visibility = View.VISIBLE
+                binding.placesRecyclerView.visibility = View.GONE
+                placesAdapter.submitList(emptyList())
+            }
+        }
     }
 
     private fun navigateToPlaceList(category: String) {
@@ -95,6 +174,19 @@ class Home : Fragment() {
         val fragment = CityDetailFragment().apply {
             arguments = Bundle().apply {
                 putString("cityName", cityName)
+            }
+        }
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun navigateToPlaceDetail(placeId: String, cityId: String) {
+        val fragment = PlaceDetailFragment().apply {
+            arguments = Bundle().apply {
+                putString("placeId", placeId)
+                putString("cityId", cityId)
             }
         }
         parentFragmentManager.beginTransaction()
