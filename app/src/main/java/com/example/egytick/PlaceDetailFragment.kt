@@ -97,19 +97,19 @@ class PlaceDetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun displayOpeningHours(openingHours: List<String>) {
-        val openingHoursText = StringBuilder("Opening Hours:\n")
+        val openingHoursText = StringBuilder()
         for (hours in openingHours) {
             openingHoursText.append("$hours\n")
         }
-        binding.openingHours.text = openingHoursText.toString()
+        binding.openingHours.text = openingHoursText.toString().trim()
     }
 
     private fun displayTicketPrices(ticketPrices: List<String>) {
-        val ticketPricesText = StringBuilder("Ticket Prices:\n")
+        val ticketPricesText = StringBuilder()
         for (price in ticketPrices) {
             ticketPricesText.append("$price\n")
         }
-        binding.ticketPrices.text = ticketPricesText.toString()
+        binding.ticketPrices.text = ticketPricesText.toString().trim()
     }
 
     private fun loadImage(imageName: String, imageView: ImageView) {
