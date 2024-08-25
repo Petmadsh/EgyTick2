@@ -23,12 +23,13 @@
 
         <activity
             android:name=".activities.BaseActivity"
-            android:exported="false"
+            android:exported="true"
             android:theme="@style/Theme.EgyTick"/>
         <activity
             android:name=".activities.RegisterActivity"
             android:exported="true"
             android:theme="@style/Theme.EgyTick"/>
+
         <!-- Login Activity as the Main Activity -->
         <activity
             android:name=".activities.LoginActivity"

@@ -25,13 +25,7 @@ class RegisterActivity : BaseActivity() {
         // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance()
 
-        setSupportActionBar(binding.toolbarRegisterActivity)
-
-        val actionBar = supportActionBar
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-        actionBar?.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
-
-        binding.toolbarRegisterActivity.setNavigationOnClickListener { onBackPressed() }
+        
 
         binding.tvLogin.setOnClickListener {
             val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
@@ -90,7 +84,6 @@ class RegisterActivity : BaseActivity() {
                 false
             }
             else -> {
-                showErrorSnackBar(resources.getString(R.string.succ_msg_register), false)
                 true
             }
         }
@@ -150,7 +143,7 @@ class RegisterActivity : BaseActivity() {
             FirebaseFirestore.getInstance().collection("users").document(it)
                 .set(userData)
                 .addOnSuccessListener {
-                    // Navigate to the main activity
+                    // Navigate to the login activity
                     val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
