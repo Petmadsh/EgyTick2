@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.egytick.databinding.FragmentPrenotaBinding
@@ -36,6 +37,23 @@ class PrenotaFragment : Fragment() {
 
         firestore = FirebaseFirestore.getInstance()
         firebaseAuth = FirebaseAuth.getInstance()
+
+        // Set up spinners with adapters
+        val visitorTypeAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.visitor_type_array,
+            android.R.layout.simple_spinner_item
+        )
+        visitorTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spVisitorType.adapter = visitorTypeAdapter
+
+        val visitorCategoryAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.visitor_category_array,
+            android.R.layout.simple_spinner_item
+        )
+        visitorCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spVisitorCategory.adapter = visitorCategoryAdapter
 
         val placeId = arguments?.getString("placeId") ?: return
 
@@ -98,6 +116,7 @@ class PrenotaFragment : Fragment() {
         val currentUser = firebaseAuth.currentUser ?: return
         val email = currentUser.email ?: ""
         val visitorType = binding.spVisitorType.selectedItem.toString()
+        val visitorCategory = binding.spVisitorCategory.selectedItem.toString()
         val selectedDate = this.selectedDate?.time ?: run {
             Toast.makeText(requireContext(), "Select a date", Toast.LENGTH_LONG).show()
             showDatePickerDialog()
@@ -107,6 +126,7 @@ class PrenotaFragment : Fragment() {
         val bookingDetails = hashMapOf(
             "email" to email,
             "visitorType" to visitorType,
+            "visitorCategory" to visitorCategory,
             "date" to selectedDate,
             "placeId" to placeId
         )

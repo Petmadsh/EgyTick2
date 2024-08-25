@@ -16,13 +16,19 @@
             android:textSize="24sp"
             android:layout_marginBottom="16dp" />
 
+        <!-- Spinner for selecting visitor type -->
         <Spinner
             android:id="@+id/spVisitorType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/visitor_type_array"
             android:layout_marginBottom="16dp" />
 
+        <!-- Spinner for selecting visitor category -->
+        <Spinner
+            android:id="@+id/spVisitorCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
 
         <com.example.egytick.utils.Button
             android:id="@+id/btnConfirmBooking"
