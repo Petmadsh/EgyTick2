@@ -1,7 +1,11 @@
 package com.example.egytick.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.egytick.R
 import com.example.egytick.databinding.ActivityForgotPasswordBinding
@@ -29,11 +33,23 @@ class ForgotPasswordActivity : AppCompatActivity() {
             if (TextUtils.isEmpty(email)) {
                 showErrorSnackBar(resources.getString(R.string.err_msg_enter_email), true)
             } else {
+                Log.d("ForgotPasswordActivity", "Attempting to send reset email")
                 firebaseAuth.sendPasswordResetEmail(email)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
+                            Log.d("ForgotPasswordActivity", "Email sent successfully")
                             showErrorSnackBar("Email sent successfully to reset your password.", false)
+
+                            // Delay before redirecting to LoginActivity
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                // Redirect to LoginActivity after the email is sent
+                                val intent = Intent(this@ForgotPasswordActivity, LoginActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                                finish()
+                            }, 2500)
                         } else {
+                            Log.e("ForgotPasswordActivity", "Error: ${task.exception?.message}")
                             showErrorSnackBar(task.exception?.message.toString(), true)
                         }
                     }
