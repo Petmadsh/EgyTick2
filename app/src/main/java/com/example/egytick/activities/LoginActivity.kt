@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import com.example.egytick.R
 import com.example.egytick.databinding.ActivityLoginBinding
@@ -22,6 +23,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+
+    //private lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
+
 
     companion object {
         private const val RC_SIGN_IN = 9001
@@ -60,6 +64,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Set onClickListener for Google Login Button
         binding.btnLoginGoogle.setOnClickListener {
+
             signInWithGoogle()
         }
 
@@ -133,9 +138,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun signInWithGoogle() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        // Sign out any existing Google sign-in session
+        googleSignInClient.signOut().addOnCompleteListener {
+            // Now initiate the sign-in process
+            val signInIntent = googleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

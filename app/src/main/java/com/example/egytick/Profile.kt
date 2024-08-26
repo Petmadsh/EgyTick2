@@ -218,11 +218,13 @@ class ProfileFragment : Fragment() {
 
     private fun logoutUser() {
         firebaseAuth.signOut()
+
         val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         requireActivity().finish()
     }
+
 
     private fun showErrorSnackBar(message: String, isError: Boolean) {
         // Implement your snackbar or toast here
