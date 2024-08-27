@@ -27,7 +27,7 @@
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Search places/cities"
+            android:queryHint="Search places by name"
             android:iconifiedByDefault="false"
             android:background="@android:color/white"
             android:layout_marginTop="8dp"
@@ -51,7 +51,7 @@
                     android:id="@+id/categoriesTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Categories"
+                    android:text="@string/categories"
                     android:textSize="18sp"
                     android:layout_marginTop="16dp" />
 
@@ -65,7 +65,7 @@
                     android:id="@+id/citiesTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cities"
+                    android:text="@string/cities"
                     android:textSize="18sp"
                     android:layout_marginTop="16dp" />
 
@@ -79,7 +79,7 @@
                     android:id="@+id/placesTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Places"
+                    android:text="@string/places"
                     android:textSize="18sp"
                     android:layout_marginTop="16dp"
                     android:visibility="gone" />
@@ -95,7 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="No places found"
+                    android:text="@string/no_places_found"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:visibility="gone"

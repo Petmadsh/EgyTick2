@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"> <!-- Change this to wrap_content -->
+        android:layout_height="wrap_content">
 
         <FrameLayout
             android:layout_marginTop="50dp"
@@ -135,7 +135,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="30dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/button_background"
+            android:background="@drawable/button_googlesignin"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:paddingTop="@dimen/btn_padding"

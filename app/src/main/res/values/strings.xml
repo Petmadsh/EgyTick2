@@ -54,7 +54,7 @@
 
 
     <string name="show_password">Show Password</string>
-    <string name="hide_password">Hide Password</string> <!-- Aggiungi questa se vuoi gestire anche il caso di nascondere la password -->
+    <string name="hide_password">Hide Password</string>
     <string name="default_web_client_id">YOUR_WEB_CLIENT_ID_HERE</string>
     <string name="review">Review</string>
     <string name="book">Book</string>
@@ -80,6 +80,8 @@
     <string name="review_text">Review text</string>
     <string name="rating">Rating</string>
     <string name="logout">logout</string>
-    <string name="no_places_found" />
+    <string name="no_places_found">No places found with this name</string>
+    <string name="opening_hours">Opening Hours</string>
+    <string name="ticket_prices">Ticket Prices</string>
 
 </resources>

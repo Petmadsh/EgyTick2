@@ -21,7 +21,6 @@ app:layout_constraintEnd_toEndOf="parent">
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Existing image container and description -->
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,7 +39,6 @@ app:layout_constraintEnd_toEndOf="parent">
         android:layout_height="wrap_content"
         android:layout_margin="8dp" />
 
-    <!-- Opening Hours Card -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,7 +55,7 @@ app:layout_constraintEnd_toEndOf="parent">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Opening Hours"
+                android:text="@string/opening_hours"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
@@ -72,7 +70,6 @@ app:layout_constraintEnd_toEndOf="parent">
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Ticket Prices Card -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -89,7 +86,7 @@ app:layout_constraintEnd_toEndOf="parent">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ticket Prices"
+                android:text="@string/ticket_prices"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
@@ -104,7 +101,6 @@ app:layout_constraintEnd_toEndOf="parent">
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Google MapView -->
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
@@ -112,7 +108,6 @@ app:layout_constraintEnd_toEndOf="parent">
         android:layout_margin="8dp"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <!-- Weather Card -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -173,7 +168,6 @@ app:layout_constraintEnd_toEndOf="parent">
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Review and Book buttons -->
     <com.example.egytick.utils.Button
         android:id="@+id/reviewButton"
         android:layout_width="match_parent"
