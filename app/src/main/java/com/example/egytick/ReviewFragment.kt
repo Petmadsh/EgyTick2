@@ -1,5 +1,6 @@
 package com.example.egytick
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,21 +31,19 @@ class ReviewFragment : Fragment() {
 
         firestore = FirebaseFirestore.getInstance()
 
-        // Fetch reviews data for the place and update UI
         val placeId = arguments?.getString("placeId") ?: return
         fetchReviewsData(placeId)
 
-        // Set up listeners for rating changes
         binding.cleanlinessRating.setOnRatingBarChangeListener { _, _, _ -> updateAverageUserRating() }
         binding.facilitiesRating.setOnRatingBarChangeListener { _, _, _ -> updateAverageUserRating() }
         binding.staffRating.setOnRatingBarChangeListener { _, _, _ -> updateAverageUserRating() }
 
-        // Set up click listener for the submit button
         binding.submitButton.setOnClickListener {
             confirmSubmitReview(placeId)
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun fetchReviewsData(placeId: String) {
         firestore.collection("reviews").whereEqualTo("placeId", placeId).get()
             .addOnSuccessListener { documents ->
@@ -67,6 +66,7 @@ class ReviewFragment : Fragment() {
             }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateAverageUserRating() {
         val cleanlinessRating = binding.cleanlinessRating.rating
         val facilitiesRating = binding.facilitiesRating.rating
@@ -105,7 +105,7 @@ class ReviewFragment : Fragment() {
         firestore.collection("reviews").add(review)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Review submitted", Toast.LENGTH_SHORT).show()
-                fetchReviewsData(placeId)  // Refresh the reviews data
+                fetchReviewsData(placeId)
             }
             .addOnFailureListener { e ->
                 showErrorSnackBar("Error submitting review: ${e.message}", true)

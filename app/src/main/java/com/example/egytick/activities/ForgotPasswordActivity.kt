@@ -20,14 +20,11 @@ class ForgotPasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize View Binding
         binding = ActivityForgotPasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance()
 
-        // Set onClickListener for Reset Password Button
         binding.btnResetPassword.setOnClickListener {
             val email = binding.etEmail.text.toString().trim { it <= ' ' }
             if (TextUtils.isEmpty(email)) {
@@ -40,9 +37,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                             Log.d("ForgotPasswordActivity", "Email sent successfully")
                             showErrorSnackBar("Email sent successfully to reset your password.", false)
 
-                            // Delay before redirecting to LoginActivity
                             Handler(Looper.getMainLooper()).postDelayed({
-                                // Redirect to LoginActivity after the email is sent
                                 val intent = Intent(this@ForgotPasswordActivity, LoginActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 startActivity(intent)

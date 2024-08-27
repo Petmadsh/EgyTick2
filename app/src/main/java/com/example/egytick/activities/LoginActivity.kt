@@ -24,7 +24,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
-    //private lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
 
 
     companion object {
@@ -35,46 +34,38 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Initialize View Binding
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance()
 
-        // Configure Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // Set onClickListener for Register TextView
         binding.tvRegister.setOnClickListener {
             val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
             startActivity(intent)
         }
 
-        // Set onClickListener for Login Button
         binding.btnLogin.setOnClickListener {
             if (validateLoginDetails()) {
                 loginUser()
             }
         }
 
-        // Set onClickListener for Google Login Button
         binding.btnLoginGoogle.setOnClickListener {
 
             signInWithGoogle()
         }
 
-        // Set onClickListener for Forgot Password TextView
         binding.tvForgotPassword.setOnClickListener {
             val intent = Intent(this@LoginActivity, ForgotPasswordActivity::class.java)
             startActivity(intent)
         }
 
-        // Setup password visibility toggle
         binding.tilPassword.setEndIconOnClickListener {
             togglePasswordVisibility(binding.etPassword)
         }
@@ -117,7 +108,6 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val firebaseUser = firebaseAuth.currentUser
                     if (firebaseUser != null && firebaseUser.isEmailVerified) {
-                        // If email is verified, proceed to MainActivity
                         showErrorSnackBar("You are logged in successfully.", false)
 
                         val intent = Intent(this@LoginActivity, MainActivity::class.java)
@@ -127,7 +117,6 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
-                        // If email is not verified, show a message and sign the user out
                         showErrorSnackBar("Please verify your email address before logging in.", true)
                         FirebaseAuth.getInstance().signOut()
                     }
@@ -138,9 +127,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun signInWithGoogle() {
-        // Sign out any existing Google sign-in session
         googleSignInClient.signOut().addOnCompleteListener {
-            // Now initiate the sign-in process
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }

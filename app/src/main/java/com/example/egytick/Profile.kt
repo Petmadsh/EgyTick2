@@ -142,7 +142,7 @@ class ProfileFragment : Fragment() {
         val userUpdates = hashMapOf<String, Any>(
             "firstName" to firstName,
             "lastName" to lastName,
-            "email" to email  // Update email in Firestore
+            "email" to email
         )
 
         val currentEmail = currentUser.email
@@ -153,7 +153,7 @@ class ProfileFragment : Fragment() {
                 if (email != currentEmail) {
                     currentUser.updateEmail(email).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            updateUserBookings(currentEmail, email)  // Pass current and new email
+                            updateUserBookings(currentEmail, email)
                             if (binding.etPassword.visibility == View.VISIBLE) {
                                 currentUser.updatePassword(password).addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
@@ -227,7 +227,7 @@ class ProfileFragment : Fragment() {
 
 
     private fun showErrorSnackBar(message: String, isError: Boolean) {
-        // Implement your snackbar or toast here
+
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 

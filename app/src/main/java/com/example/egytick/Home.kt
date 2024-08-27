@@ -37,33 +37,28 @@ class Home : Fragment() {
 
         firestore = FirebaseFirestore.getInstance()
 
-        // Set up RecyclerViews for Categories
         categoryAdapter = CategoryAdapter { category ->
             navigateToPlaceList(category)
         }
         binding.categoriesRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         binding.categoriesRecyclerView.adapter = categoryAdapter
 
-        // Set up RecyclerView for Cities
         cityAdapter = CityAdapter { cityName ->
             navigateToCityDetail(cityName)
         }
         binding.citiesRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.citiesRecyclerView.adapter = cityAdapter
 
-        // Set up RecyclerView for Places (initially empty)
         placesAdapter = PlacesAdapter { placeId, cityId ->
             navigateToPlaceDetail(placeId, cityId)
         }
         binding.placesRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.placesRecyclerView.adapter = placesAdapter
 
-        // Fetch Categories, Cities, and Places
         fetchCategories()
         fetchCities()
         fetchPlaces()
 
-        // Set up SearchView
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -134,27 +129,23 @@ class Home : Fragment() {
 
     private fun filterPlaces(query: String?) {
         if (query.isNullOrEmpty()) {
-            // If query is empty, show cities and hide places
             binding.citiesRecyclerView.visibility = View.VISIBLE
             binding.placesRecyclerView.visibility = View.GONE
             binding.placesTitle.visibility = View.GONE
             binding.tvNoPlacesFound.visibility = View.GONE
             placesAdapter.submitList(emptyList())
         } else {
-            // Filter the places based on the search query
             val filteredList = placeList.filter { place ->
                 place.name.contains(query, ignoreCase = true)
             }
 
             if (filteredList.isNotEmpty()) {
-                // Hide cities, hide "no places" message, and show filtered places
                 binding.citiesRecyclerView.visibility = View.GONE
                 binding.placesRecyclerView.visibility = View.VISIBLE
                 binding.placesTitle.visibility = View.VISIBLE
                 binding.tvNoPlacesFound.visibility = View.GONE
                 placesAdapter.submitList(filteredList)
             } else {
-                // If no places match the query, hide cities, show "no places" message, and hide places
                 binding.citiesRecyclerView.visibility = View.GONE
                 binding.placesRecyclerView.visibility = View.GONE
                 binding.placesTitle.visibility = View.GONE

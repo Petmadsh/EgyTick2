@@ -53,6 +53,8 @@ class Tickets : Fragment() {
         val currentUser = firebaseAuth.currentUser ?: return
         firestore.collection("bookings").whereEqualTo("email", currentUser.email).get()
             .addOnSuccessListener { result ->
+                if (!isAdded || _binding == null) return@addOnSuccessListener
+
                 if (result.isEmpty) {
                     showNoTicketsMessage()
                 } else {
@@ -63,12 +65,16 @@ class Tickets : Fragment() {
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error loading bookings: ${e.message}", Toast.LENGTH_LONG).show()
+                if (isAdded && _binding != null) {
+                    Toast.makeText(requireContext(), "Error loading bookings: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             }
     }
 
-    @SuppressLint("SimpleDateFormat")
+    @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun addBookingToContainer(document: DocumentSnapshot) {
+        if (!isAdded || _binding == null) return
+
         val bookingView = layoutInflater.inflate(R.layout.item_booking, binding.bookingsContainer, false)
         val placeNameTextView = bookingView.findViewById<TextView>(R.id.placeName)
         val qrCodeImageView = bookingView.findViewById<ImageView>(R.id.qrCodeImage)
@@ -80,7 +86,9 @@ class Tickets : Fragment() {
 
         if (placeId != null) {
             getPlaceName(placeId) { placeName ->
-                placeNameTextView.text = placeName
+                if (isAdded && _binding != null) {
+                    placeNameTextView.text = placeName
+                }
             }
         } else {
             placeNameTextView.text = "Unknown Place"
@@ -94,26 +102,27 @@ class Tickets : Fragment() {
         }
         bookingDateTextView.text = formattedDate
 
-        // Convert the document data to a map, then modify the "date" field to be a formatted string
         val bookingData = document.data?.toMutableMap() ?: mutableMapOf()
         bookingData["date"] = formattedDate
 
-        // Convert the modified booking data map back to a string for QR code generation
         val bookingDataString = bookingData.entries.joinToString(", ") { "${it.key}=${it.value}" }
         val qrCodeBitmap = generateQRCode(bookingDataString)
         qrCodeImageView.setImageBitmap(qrCodeBitmap)
 
         cancelButton.setOnClickListener {
-            showConfirmationDialog(document.id, bookingView)
+            if (isAdded && _binding != null) {
+                showConfirmationDialog(document.id, bookingView)
+            }
         }
 
         binding.bookingsContainer.addView(bookingView)
     }
 
-
     private fun getPlaceName(placeId: String, callback: (String) -> Unit) {
         firestore.collection("cities").get()
             .addOnSuccessListener { citiesResult ->
+                if (!isAdded || _binding == null) return@addOnSuccessListener
+
                 var placeFound = false
                 var pendingRequests = citiesResult.documents.size
 
@@ -121,6 +130,8 @@ class Tickets : Fragment() {
                     val cityId = cityDocument.id
                     firestore.collection("cities").document(cityId).collection("places").document(placeId).get()
                         .addOnSuccessListener { placeDocument ->
+                            if (!isAdded || _binding == null) return@addOnSuccessListener
+
                             pendingRequests--
                             if (placeDocument.exists() && !placeFound) {
                                 val placeName = placeDocument.getString("name") ?: "Unknown Place"
@@ -132,6 +143,8 @@ class Tickets : Fragment() {
                             }
                         }
                         .addOnFailureListener {
+                            if (!isAdded || _binding == null) return@addOnFailureListener
+
                             pendingRequests--
                             if (pendingRequests == 0 && !placeFound) {
                                 callback("Unknown Place")
@@ -140,7 +153,9 @@ class Tickets : Fragment() {
                 }
             }
             .addOnFailureListener {
-                callback("Unknown Place")
+                if (isAdded && _binding != null) {
+                    callback("Unknown Place")
+                }
             }
     }
 
@@ -163,17 +178,24 @@ class Tickets : Fragment() {
     }
 
     private fun showConfirmationDialog(bookingId: String, bookingView: View) {
+        if (!isAdded || _binding == null) return
+
         AlertDialog.Builder(requireContext())
             .setTitle("Cancel Booking")
             .setMessage("Are you sure you want to cancel this booking?")
             .setPositiveButton("Yes") { _, _ ->
-                deleteBooking(bookingId, bookingView)
+                if (isAdded && _binding != null) {
+                    deleteBooking(bookingId, bookingView)
+                }
             }
             .setNegativeButton("No", null)
             .show()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showNoTicketsMessage() {
+        if (!isAdded || _binding == null) return
+
         val noTicketsTextView = TextView(context).apply {
             text = "There are no tickets"
             textSize = 22f
@@ -187,11 +209,15 @@ class Tickets : Fragment() {
     private fun deleteBooking(bookingId: String, bookingView: View) {
         firestore.collection("bookings").document(bookingId).delete()
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Booking cancelled", Toast.LENGTH_SHORT).show()
-                binding.bookingsContainer.removeView(bookingView)
+                if (isAdded && _binding != null) {
+                    Toast.makeText(requireContext(), "Booking cancelled", Toast.LENGTH_SHORT).show()
+                    binding.bookingsContainer.removeView(bookingView)
+                }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error cancelling booking: ${e.message}", Toast.LENGTH_LONG).show()
+                if (isAdded && _binding != null) {
+                    Toast.makeText(requireContext(), "Error cancelling booking: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             }
     }
 

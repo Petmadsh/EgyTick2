@@ -22,7 +22,6 @@ class RegisterActivity : BaseActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance()
 
 
@@ -95,14 +94,11 @@ class RegisterActivity : BaseActivity() {
         val firstName: String = binding.etFirstName.text.toString().trim { it <= ' ' }
         val lastName: String = binding.etLastName.text.toString().trim { it <= ' ' }
 
-        // Create an instance and create a register a user with email and password.
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Firebase registered user
                     val firebaseUser = task.result?.user
 
-                    // Send email verification
                     firebaseUser?.let {
                         sendEmailVerification(firebaseUser)
                     }
@@ -119,7 +115,6 @@ class RegisterActivity : BaseActivity() {
                 if (task.isSuccessful) {
                     showErrorSnackBar("Verification email sent to ${user.email}. Please verify your email before logging in.", false)
 
-                    // Save user data in Firestore after sending verification email
                     saveUserData(user)
                 } else {
                     showErrorSnackBar("Failed to send verification email.", true)
@@ -132,7 +127,6 @@ class RegisterActivity : BaseActivity() {
         val lastName: String = binding.etLastName.text.toString().trim { it <= ' ' }
         val email: String? = user.email
 
-        // Save user data in Firestore
         val userData = hashMapOf(
             "firstName" to firstName,
             "lastName" to lastName,
@@ -143,7 +137,6 @@ class RegisterActivity : BaseActivity() {
             FirebaseFirestore.getInstance().collection("users").document(it)
                 .set(userData)
                 .addOnSuccessListener {
-                    // Navigate to the login activity
                     val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)

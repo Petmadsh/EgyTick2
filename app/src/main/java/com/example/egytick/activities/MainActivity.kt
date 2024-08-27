@@ -20,10 +20,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set up Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance()
 
-        // Check if the user's email is verified
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null && !currentUser.isEmailVerified) {
             firebaseAuth.signOut()
@@ -34,10 +32,8 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        // Set up the toolbar
         setSupportActionBar(binding.toolbar)
 
-        // Initialize first fragment
         if (savedInstanceState == null) {
             replaceFragment(Home(), false)
         }

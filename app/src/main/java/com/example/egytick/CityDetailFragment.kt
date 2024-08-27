@@ -31,7 +31,6 @@ class CityDetailFragment : Fragment() {
 
         firestore = FirebaseFirestore.getInstance()
 
-        // Fetch city data and places
         val cityName = arguments?.getString("cityName") ?: ""
         binding.cityName.text = cityName
         fetchCityData(cityName)
